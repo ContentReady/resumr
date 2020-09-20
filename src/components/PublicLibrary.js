@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ContentCard from "./ContentCard";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,8 +23,7 @@ export default function PublicLibrary() {
   const publicContent = [
     {
       id: "1",
-      thumbnail:
-        "https://firebasestorage.googleapis.com/v0/b/resumr-8540b.appspot.com/o/public%2Ftime_machine_hg_wells.jpg?alt=media",
+      thumbnail: "",
       title: "The Time Travel - HG Wells",
       type: "pdf",
     },
@@ -41,16 +41,19 @@ export default function PublicLibrary() {
     },
   ];
   return (
-    <Grid container className={classes.root} spacing={2}>
-      <Grid item xs={12}>
-        <Grid container justify="center" spacing={spacing}>
-          {publicContent.map((content) => (
-            <Grid key={content.id} item>
-              <ContentCard content={content} className={classes.card} />
-            </Grid>
-          ))}
+    <>
+      {/* <Typography>Free Downloads</Typography> */}
+      <Grid container className={classes.root} spacing={2}>
+        <Grid item xs={12}>
+          <Grid container justify="center" spacing={spacing}>
+            {publicContent.map((content) => (
+              <Grid key={content.id} item>
+                <ContentCard content={content} className={classes.card} />
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 }

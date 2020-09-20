@@ -1,8 +1,7 @@
 import React from "react";
 import logo from "../../logo.svg";
-import "./home.css";
-import { Link } from "@reach/router";
 import PublicLibrary from "../../components/PublicLibrary";
+import UserLibrary from "../../components/UserLibrary";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -35,6 +34,7 @@ function Home() {
             </Typography>
           </Paper>
         </Grid>
+        <UserLibrary />
         <PublicLibrary />
       </Grid>
     </div>

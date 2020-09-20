@@ -2,10 +2,8 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import PDFIcon from "../assets/images/pdf.png";
@@ -16,7 +14,6 @@ import { Link } from "@reach/router";
 const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: 300,
-    // height: 250,
   },
   media: {
     height: 140,
@@ -26,11 +23,11 @@ const useStyles = makeStyles((theme) => ({
 export default function ContentCard({ content }) {
   const classes = useStyles();
 
-  const verbs = {
-    pdf: "Read",
-    audio: "Listen",
-    video: "Watch",
-  };
+  //   const verbs = {
+  //     pdf: "Read",
+  //     audio: "Listen",
+  //     video: "Watch",
+  //   };
   const defaultThumbnails = {
     pdf: PDFIcon,
     audio: AudioIcon,
@@ -38,7 +35,7 @@ export default function ContentCard({ content }) {
   };
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea component={Link} to={`/content/${content.id}`}>
         <CardMedia
           className={classes.media}
           image={content.thumbnail || defaultThumbnails[content.type]}
@@ -50,19 +47,6 @@ export default function ContentCard({ content }) {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions>
-        <Button
-          size="small"
-          color="primary"
-          component={Link}
-          to={`/content/${content.id}`}
-        >
-          {verbs[content.type]}
-        </Button>
-        <Button size="small" color="secondary" disabled>
-          Bookmark
-        </Button>
-      </CardActions>
     </Card>
   );
 }
