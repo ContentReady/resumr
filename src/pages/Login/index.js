@@ -2,6 +2,7 @@ import { Link } from "@reach/router";
 import React, { useState, useEffect } from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { fbCore, auth } from "../../components/Firebase";
+import { navigate } from "@reach/router";
 
 // Configure FirebaseUI.
 const uiConfig = {
@@ -11,10 +12,6 @@ const uiConfig = {
   signInSuccessUrl: "/",
   signInOptions: [fbCore.auth.EmailAuthProvider.PROVIDER_ID],
   callbacks: {
-    signInSuccessWithAuthResult: () => {
-      console.log("signInSuccessWithAuthResult");
-      return false;
-    },
     signInFailure: (error) => {
       console.log("signInFailure");
       if (error.code !== "firebaseui/anonymous-upgrade-merge-conflict") {
@@ -36,6 +33,9 @@ export default function Login() {
       }
     });
   }, []);
+  if (user && user.email) {
+    navigate("/");
+  }
   return (
     <>
       {user && user.email ? (
