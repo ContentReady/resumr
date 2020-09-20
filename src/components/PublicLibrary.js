@@ -30,13 +30,13 @@ export default function PublicLibrary() {
     {
       id: "2",
       thumbnail: "",
-      title: "The Time Travel - HG Wells",
+      title: "Hell Yeah or No!",
       type: "audio",
     },
     {
       id: "3",
       thumbnail: "",
-      title: "The Time Travel - HG Wells",
+      title: "Life of Brian",
       type: "video",
     },
   ];

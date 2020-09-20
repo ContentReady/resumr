@@ -11,10 +11,12 @@ import PropTypes from "prop-types";
 import PDFIcon from "../assets/images/pdf.png";
 import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
+import { Link } from "@reach/router";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 345,
+    minWidth: 300,
+    // height: 250,
   },
   media: {
     height: 140,
@@ -49,10 +51,15 @@ export default function ContentCard({ content }) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary">
+        <Button
+          size="small"
+          color="primary"
+          component={Link}
+          to={`/content/${content.id}`}
+        >
           {verbs[content.type]}
         </Button>
-        <Button size="small" color="primary">
+        <Button size="small" color="secondary" disabled>
           Bookmark
         </Button>
       </CardActions>
