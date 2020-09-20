@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ReactPDFView({ fileUrl, width }) {
+export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
   const classes = useStyles();
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -54,6 +54,12 @@ export default function ReactPDFView({ fileUrl, width }) {
   const handleFullscreenMode = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    if (position) {
+      setPageNumber(position);
+    }
+  }, [position]);
 
   const handleWidth = () => {
     if (open) {
@@ -69,13 +75,17 @@ export default function ReactPDFView({ fileUrl, width }) {
 
   const handleNextPage = (e) => {
     if (pageNumber < numPages) {
-      setPageNumber(pageNumber + 1);
+      const newPageNumber = pageNumber + 1;
+      setPageNumber(newPageNumber);
+      if (pageChange) pageChange(newPageNumber);
     }
   };
 
   const handlePrevPage = (e) => {
     if (pageNumber > 1) {
-      setPageNumber(pageNumber - 1);
+      const newPageNumber = pageNumber - 1;
+      setPageNumber(newPageNumber);
+      if (pageChange) pageChange(newPageNumber);
     }
   };
 
@@ -180,4 +190,5 @@ export default function ReactPDFView({ fileUrl, width }) {
 ReactPDFView.propTypes = {
   fileUrl: PropTypes.string.isRequired,
   width: PropTypes.number.isRequired,
+  pageChange: PropTypes.func,
 };

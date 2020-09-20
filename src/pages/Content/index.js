@@ -75,6 +75,7 @@ export default function Content({ id }) {
               id={id}
               title={content.title}
               type={content.type}
+              position={content.position}
               source={sensibleUrl}
             />
           ) : (

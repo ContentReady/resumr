@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles } from "@material-ui/core";
 import ReactPDFView from "./ReactPDFView";
+import { auth, db } from "./Firebase";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -10,10 +11,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ContentView({ title, type, source }) {
+export default function ContentView({ id, title, type, source, position }) {
   const classes = useStyles();
   const viewerHeight = window.innerHeight;
   let viewerWidth = window.innerWidth;
+  const [lastSavedPosition, setLastSavedPosition] = useState(position);
+
+  const saveCurrentPosition = (position) => {
+    db.collection("users")
+      .doc(auth.currentUser.uid)
+      .collection("content")
+      .doc(id)
+      .update({
+        position,
+      });
+  };
+
+  const onTimeUpdate = (event) => {
+    const videoEl = document.getElementById(`video-${id}`);
+    const audioEl = document.getElementById(`audio-${id}`);
+    if (videoEl) {
+      const currentTime = Math.floor(videoEl.currentTime);
+      if (currentTime !== lastSavedPosition) {
+        setLastSavedPosition(currentTime);
+        saveCurrentPosition(currentTime);
+      }
+    } else if (audioEl) {
+      const currentTime = Math.floor(audioEl.currentTime);
+      if (currentTime !== lastSavedPosition) {
+        setLastSavedPosition(currentTime);
+        saveCurrentPosition(currentTime);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (position) {
+      const videoEl = document.getElementById(`video-${id}`);
+      const audioEl = document.getElementById(`audio-${id}`);
+      if (videoEl) {
+        videoEl.currentTime = lastSavedPosition;
+      } else if (audioEl) {
+        audioEl.currentTime = lastSavedPosition;
+      }
+    }
+  });
 
   if (viewerWidth > 1024) {
     viewerWidth *= 0.7;
@@ -24,7 +66,12 @@ export default function ContentView({ title, type, source }) {
     return (
       <>
         <div className={classes.container}>
-          <ReactPDFView fileUrl={source} width={viewerWidth} />
+          <ReactPDFView
+            fileUrl={source}
+            width={viewerWidth}
+            position={position}
+            pageChange={saveCurrentPosition}
+          />
         </div>
       </>
     );
@@ -52,34 +99,30 @@ export default function ContentView({ title, type, source }) {
   if (type.toLowerCase().includes("video")) {
     // Load HTML5 Video
     return (
-      <div className="flex shadow-lg mb-3 justify-center items-center">
-        <video
-          className="my-4"
-          width={viewerWidth}
-          height={viewerHeight}
-          controls
-          src={source}
-        >
-          Your browser does not support the video tag.
-        </video>
-      </div>
+      <video
+        id={"video-" + id}
+        width={viewerWidth}
+        controls
+        src={source}
+        onTimeUpdate={onTimeUpdate}
+      >
+        Your browser does not support the video tag.
+      </video>
     );
   }
 
   if (type.toLowerCase().includes("audio")) {
     // Load HTML5 Audio
     return (
-      <div
-        className="flex shadow-lg mb-3 justify-center items-center"
-        style={{
-          height: `${viewerHeight}px`,
-        }}
+      <audio
+        id={"audio-" + id}
+        width={viewerWidth}
+        src={source}
+        controls
+        onTimeUpdate={onTimeUpdate}
       >
-        <audio controls>
-          <source src={source} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-      </div>
+        Your browser does not support the audio element.
+      </audio>
     );
   }
 
@@ -111,7 +154,9 @@ export default function ContentView({ title, type, source }) {
 }
 
 ContentView.propTypes = {
+  id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   source: PropTypes.string.isRequired,
+  position: PropTypes.number,
 };

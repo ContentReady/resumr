@@ -59,8 +59,11 @@ export default function Basic(props) {
             {...getInputProps()}
             accept="application/pdf, audio/mp3, video/mp4"
           />
-          <Typography gutterBottom variant="h3" component="h1">
+          <Typography gutterBottom variant="h3" component="h3">
             Click or drag &amp; drop to load a file.
+          </Typography>
+          <Typography gutterBottom variant="h5" component="h5">
+            Currently supported formats: PDF, MP4 and MP3
           </Typography>
         </div>
       )}

@@ -71,5 +71,6 @@ ContentCard.propTypes = {
     thumbnail: PropTypes.string,
     type: PropTypes.string.isRequired,
     source: PropTypes.string,
+    position: PropTypes.number,
   }),
 };
