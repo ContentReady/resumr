@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import ContentCard from "./ContentCard";
-import { Typography } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
+import PublicContentCard from "./PublicContentCard";
+import { db } from "./Firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    textAlign: "center",
   },
   card: {
     height: 140,
@@ -18,37 +19,39 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PublicLibrary() {
-  const [spacing, setSpacing] = React.useState(2);
   const classes = useStyles();
-  const publicContent = [
-    {
-      id: "1",
-      thumbnail: "",
-      title: "The Time Travel - HG Wells",
-      type: "pdf",
-    },
-    {
-      id: "2",
-      thumbnail: "",
-      title: "Hell Yeah or No!",
-      type: "audio",
-    },
-    {
-      id: "3",
-      thumbnail: "",
-      title: "Life of Brian",
-      type: "video",
-    },
-  ];
+  const [spacing, setSpacing] = useState(2);
+  const [publicContent, setPublicContent] = useState([]);
+  useEffect(() => {
+    if (publicContent.length) {
+      return;
+    }
+    db.collection("public")
+      .get()
+      .then((querySnapshot) => {
+        const contentArray = [];
+        querySnapshot.forEach((doc) => {
+          const obj = doc.data();
+          obj["id"] = doc.id;
+          contentArray.push(obj);
+        });
+        setPublicContent(contentArray);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  });
   return (
     <>
-      {/* <Typography>Free Downloads</Typography> */}
+      <Typography className={classes.root} variant="h3" component="h2">
+        Free Downloads
+      </Typography>
       <Grid container className={classes.root} spacing={2}>
         <Grid item xs={12}>
           <Grid container justify="center" spacing={spacing}>
             {publicContent.map((content) => (
               <Grid key={content.id} item>
-                <ContentCard content={content} className={classes.card} />
+                <PublicContentCard content={content} className={classes.card} />
               </Grid>
             ))}
           </Grid>

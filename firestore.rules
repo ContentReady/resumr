@@ -4,8 +4,11 @@ service cloud.firestore {
     match /public/{document=**} {
       allow read, write: if true;
     }
+    match /users/{userId}/{document=**} {
+      allow read, create, update, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
     match /{document=**} {
-      allow read, write: if false;
+      allow read, write: if true;
     }
   }
 }

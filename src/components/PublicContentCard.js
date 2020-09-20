@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
+import CardActions from "@material-ui/core/CardActions";
+import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import PDFIcon from "../assets/images/pdf.png";
@@ -11,6 +12,8 @@ import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
 import { Link } from "@reach/router";
 import offline from "./OfflineStorage";
+import { auth, db } from "./Firebase";
+import { navigate } from "@reach/router";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ContentCard({ content }) {
+export default function PublicContentCard({ content }) {
   const classes = useStyles();
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const defaultThumbnails = {
@@ -44,27 +47,40 @@ export default function ContentCard({ content }) {
     }
   }, [content]);
 
+  const addToLibrary = () => {
+    db.collection("users")
+      .doc(auth.currentUser.uid)
+      .collection("content")
+      .add(content)
+      .then((docRef) => {
+        navigate(`/content/${docRef.id}`);
+      });
+  };
+
   return (
     <Card className={classes.root}>
-      <CardActionArea component={Link} to={`/content/${content.id}`}>
-        {thumbnailUrl && (
-          <CardMedia
-            className={classes.media}
-            image={thumbnailUrl}
-            title="Contemplative Reptile"
-          />
-        )}
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {content.title}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+      {thumbnailUrl && (
+        <CardMedia
+          className={classes.media}
+          image={thumbnailUrl}
+          title="Contemplative Reptile"
+        />
+      )}
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="h2">
+          {content.title}
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Button size="small" color="primary" onClick={addToLibrary}>
+          Add to Library
+        </Button>
+      </CardActions>
     </Card>
   );
 }
 
-ContentCard.propTypes = {
+PublicContentCard.propTypes = {
   content: PropTypes.exact({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
