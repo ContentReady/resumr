@@ -6,7 +6,7 @@ import {
   Grid,
   Paper,
 } from "@material-ui/core";
-import { auth, db } from "./Firebase";
+import { auth, rtdb } from "./Firebase";
 import offline from "./OfflineStorage";
 import ContentView from "./ContentView";
 
@@ -28,13 +28,11 @@ export default function ContentDetails({ id }) {
   const [sensibleUrl, setSensibleUrl] = useState("");
   useEffect(() => {
     if (id) {
-      db.collection("users")
-        .doc(auth.currentUser.uid)
-        .collection("content")
-        .doc(id)
-        .get()
+      rtdb
+        .ref(`users/${auth.currentUser.uid}/content/${id}`)
+        .once("value")
         .then((doc) => {
-          const data = doc.data();
+          const data = doc.val();
           setContent(data);
           // Our hosted contentUrl will need to be:
           // 1. Publicly accessible OR

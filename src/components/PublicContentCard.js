@@ -10,10 +10,10 @@ import PropTypes from "prop-types";
 import PDFIcon from "../assets/images/pdf.png";
 import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
-import { Link } from "@reach/router";
 import offline from "./OfflineStorage";
-import { auth, db } from "./Firebase";
+import { auth, rtdb } from "./Firebase";
 import { navigate } from "@reach/router";
+import { v4 as uuidv4 } from "uuid";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,12 +48,12 @@ export default function PublicContentCard({ content }) {
   }, [content]);
 
   const addToLibrary = () => {
-    db.collection("users")
-      .doc(auth.currentUser.uid)
-      .collection("content")
-      .add(content)
-      .then((docRef) => {
-        navigate(`/content/${docRef.id}`);
+    const contentId = uuidv4();
+    rtdb
+      .ref(`users/${auth.currentUser.uid}/content/${contentId}`)
+      .set(content)
+      .then(() => {
+        navigate(`/content/${contentId}`);
       });
   };
 
