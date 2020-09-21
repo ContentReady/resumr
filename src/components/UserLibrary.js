@@ -56,6 +56,7 @@ export default function UserLibrary({ openContent }) {
     }
     rtdb
       .ref(`users/${auth.currentUser.uid}/content`)
+      .orderByChild("lastPlayed")
       .once("value")
       .then((querySnapshot) => {
         const contentArray = [];
@@ -64,7 +65,7 @@ export default function UserLibrary({ openContent }) {
           obj["id"] = doc.key;
           contentArray.push(obj);
         });
-        setUserContent(contentArray);
+        setUserContent(contentArray.reverse());
       })
       .catch((e) => {
         console.error(e);
