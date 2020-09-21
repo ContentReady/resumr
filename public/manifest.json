@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Resumr",
+  "name": "Resume Where You Left Off",
   "icons": [
     {
       "src": "favicon.ico",
