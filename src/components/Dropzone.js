@@ -24,7 +24,7 @@ export default function Basic(props) {
   const classes = useStyles();
   const [uploading, setUploading] = useState(false);
   const { getRootProps, getInputProps } = useDropzone({
-    accept: ["application/pdf", "audio/*", "video/*"],
+    accept: "application/pdf, audio/*, video/*",
     multiple: false,
     maxFiles: 1,
     onDropAccepted: (files) => {
