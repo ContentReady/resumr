@@ -11,6 +11,7 @@ import { rtdb, auth } from "./Firebase";
 import PDFIcon from "../assets/images/pdf.png";
 import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
+import { offlineList } from "./OfflineRTDB";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,17 +55,8 @@ export default function UserLibrary({ openContent }) {
     if (userContent.length) {
       return;
     }
-    rtdb
-      .ref(`users/${auth.currentUser.uid}/content`)
-      .orderByChild("lastPlayed")
-      .once("value")
-      .then((querySnapshot) => {
-        const contentArray = [];
-        querySnapshot.forEach((doc) => {
-          const obj = doc.val();
-          obj["id"] = doc.key;
-          contentArray.push(obj);
-        });
+    offlineList()
+      .then((contentArray) => {
         setUserContent(contentArray.reverse());
       })
       .catch((e) => {

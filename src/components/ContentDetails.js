@@ -6,8 +6,8 @@ import {
   Grid,
   Paper,
 } from "@material-ui/core";
-import { auth, rtdb } from "./Firebase";
 import offline from "./OfflineStorage";
+import offlineDoc from "./OfflineRTDB";
 import ContentView from "./ContentView";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,11 +28,8 @@ export default function ContentDetails({ id }) {
   const [sensibleUrl, setSensibleUrl] = useState("");
   useEffect(() => {
     if (id) {
-      rtdb
-        .ref(`users/${auth.currentUser.uid}/content/${id}`)
-        .once("value")
-        .then((doc) => {
-          const data = doc.val();
+      offlineDoc(id)
+        .then((data) => {
           setContent(data);
           // Our hosted contentUrl will need to be:
           // 1. Publicly accessible OR
