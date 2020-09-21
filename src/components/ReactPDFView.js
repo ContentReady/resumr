@@ -68,7 +68,7 @@ export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
       setNewWidth(window.innerWidth);
 
       if (window.innerWidth > 1024) {
-        setNewWidth(window.innerWidth * 0.7);
+        setNewWidth(window.innerWidth * 0.6);
       }
     }
   };
@@ -135,8 +135,7 @@ export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
           pageNumber={pageNumber}
           renderAnnotationLayer={false}
           renderMode="svg"
-          // width={newWidth}
-          maxHeight={0.8 * window.innerHeight}
+          width={newWidth}
         />
       </Document>
       <Button className={classes.maxBtn} onClick={handleFullscreenMode}>

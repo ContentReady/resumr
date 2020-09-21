@@ -65,81 +65,60 @@ export default function ContentView({ id, title, type, source, position }) {
     viewerWidth *= 0.7;
   }
 
-  let contentEl;
+  let contentEl = <p>Loading content...</p>;
 
   if (type.toLowerCase().includes("pdf")) {
-    // Load PDF Viewer
-    return (
-      <>
-        <div className={classes.container}>
-          <ReactPDFView
-            fileUrl={source}
-            width={viewerWidth}
-            position={position}
-            pageChange={saveCurrentPosition}
-          />
-        </div>
-      </>
+    contentEl = (
+      <ReactPDFView
+        fileUrl={source}
+        width={viewerWidth}
+        position={position}
+        pageChange={saveCurrentPosition}
+      />
     );
-  }
-
-  if (type.toLowerCase().includes("youtube")) {
+  } else if (type.toLowerCase().includes("youtube")) {
     const youtubeId = source.split("/").pop();
-    // Load Youtube Embed
-    return (
-      <div className={classes.container}>
-        <iframe
-          className="my-4"
-          title={title}
-          width={viewerWidth * 0.7}
-          height={viewerHeight * 0.7}
-          src={`https://www.youtube.com/embed/${youtubeId}`}
-          frameBorder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
+    contentEl = (
+      <iframe
+        className="my-4"
+        title={title}
+        width={viewerWidth * 0.7}
+        height={viewerHeight * 0.7}
+        src={`https://www.youtube.com/embed/${youtubeId}`}
+        frameBorder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
     );
-  }
-
-  if (type.toLowerCase().includes("video")) {
-    // Load HTML5 Video
-    return (
-      <Grid container alignItems="center" justify="center">
-        <video
-          id={"video-" + id}
-          width={viewerWidth}
-          controls
-          src={source}
-          onTimeUpdate={onTimeUpdate}
-        >
-          Your browser does not support the video tag.
-        </video>
-      </Grid>
+  } else if (type.toLowerCase().includes("video")) {
+    contentEl = (
+      <video
+        id={"video-" + id}
+        width={viewerWidth}
+        controls
+        src={source}
+        onTimeUpdate={onTimeUpdate}
+      >
+        Your browser does not support the video tag.
+      </video>
     );
-  }
-
-  if (type.toLowerCase().includes("audio")) {
-    // Load HTML5 Audio
-    return (
-      <Grid container alignItems="center" justify="center">
-        <audio
-          id={"audio-" + id}
-          width={viewerWidth}
-          src={source}
-          controls
-          onTimeUpdate={onTimeUpdate}
-        >
-          Your browser does not support the audio element.
-        </audio>
-      </Grid>
+  } else if (type.toLowerCase().includes("audio")) {
+    contentEl = (
+      <audio
+        id={"audio-" + id}
+        src={source}
+        controls
+        onTimeUpdate={onTimeUpdate}
+      >
+        Your browser does not support the audio element.
+      </audio>
     );
   }
 
   return (
-    <div className="flex-1 shadow-lg mr-3 mb-4" style={{ height: "410px" }}>
-      <p>Unknown content.</p>
-    </div>
+    <Grid container classes={classes}>
+      {contentEl}
+    </Grid>
   );
 }
 
