@@ -4,6 +4,7 @@ import {
   makeStyles,
   CircularProgress,
   Grid,
+  Paper,
 } from "@material-ui/core";
 import { auth, db } from "./Firebase";
 import offline from "./OfflineStorage";
@@ -17,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
+    elevation: 0,
   },
 }));
 
@@ -58,7 +60,7 @@ export default function ContentDetails({ id }) {
     );
   }
   return (
-    <div>
+    <Paper className={classes.paper} elevation={0}>
       {sensibleUrl ? (
         <ContentView
           id={id}
@@ -79,13 +81,13 @@ export default function ContentDetails({ id }) {
       )}
       <Typography
         color="textSecondary"
-        variant="h5"
+        variant="caption"
         component="h1"
         align="center"
         className={classes.heading}
       >
         {content.title}
       </Typography>
-    </div>
+    </Paper>
   );
 }
