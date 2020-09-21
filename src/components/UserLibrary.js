@@ -8,7 +8,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { db, auth } from "./Firebase";
-import { Link } from "@reach/router";
 import PDFIcon from "../assets/images/pdf.png";
 import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UserLibrary() {
+export default function UserLibrary({ openContent }) {
   const [userContent, setUserContent] = useState([]);
   const classes = useStyles();
   const icons = {
@@ -78,14 +77,14 @@ export default function UserLibrary() {
         <TableBody>
           {userContent.length ? (
             userContent.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow onClick={() => openContent(row.id)} key={row.id}>
                 <TableCell component="th" scope="row">
                   {row.type && (
                     <img width="32" src={icons[row.type]} alt={row.type} />
                   )}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  <Link to={"/content/" + row.id}>{row.title}</Link>
+                  {row.title}
                 </TableCell>
                 {/* <TableCell component="th" scope="row">
                 {row.uploaded && row.uploaded.toDate().toLocaleString()}
