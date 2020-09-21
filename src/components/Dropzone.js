@@ -4,9 +4,8 @@ import { useDropzone } from "react-dropzone";
 import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import { storage, auth, rtdb } from "./Firebase";
+import { storage, auth, db } from "./Firebase";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import { v4 as uuidv4 } from "uuid";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,12 +42,12 @@ export default function Basic(props) {
           lastModified: file.lastModified,
           uploaded: new Date(),
         };
-        const contentId = uuidv4();
-        rtdb
-          .ref(`users/${auth.currentUser.uid}/content/${contentId}`)
-          .set(payload)
-          .then(() => {
-            navigate(`/content/${contentId}`);
+        db.collection("users")
+          .doc(auth.currentUser.uid)
+          .collection("content")
+          .add(payload)
+          .then((docRef) => {
+            navigate(`/content/${docRef.id}`);
           });
       });
     },

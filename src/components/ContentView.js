@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles, Grid } from "@material-ui/core";
 import ReactPDFView from "./ReactPDFView";
-import { auth, rtdb } from "./Firebase";
+import { auth, db } from "./Firebase";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,11 +18,15 @@ export default function ContentView({ id, title, type, source, position }) {
   const [lastSavedPosition, setLastSavedPosition] = useState(position);
 
   const saveCurrentPosition = (position, totalLength) => {
-    rtdb.ref(`users/${auth.currentUser.uid}/content/${id}`).update({
-      position: position,
-      totalLength: totalLength,
-      lastPlayed: new Date(),
-    });
+    db.collection("users")
+      .doc(auth.currentUser.uid)
+      .collection("content")
+      .doc(id)
+      .update({
+        position: position,
+        totalLength: totalLength,
+        lastPlayed: new Date(),
+      });
   };
 
   const onTimeUpdate = (event) => {

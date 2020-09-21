@@ -13,9 +13,34 @@ const firebaseConfig = {
   measurementId: "G-LYQ5X523B4",
 };
 
+// if (!firebase.apps.length) {
+//   firebase.initializeApp({});
+// }
+
+// if (typeof window !== "undefined" && !firebase.apps.length) {
+//   firebase.initializeApp(firebaseConfig);
+//   if ("measurementId" in firebaseConfig) firebase.analytics();
+// }
+
 try {
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
+  firebase
+    .firestore()
+    .enablePersistence()
+    .catch(function (err) {
+      if (err.code === "failed-precondition") {
+        // Multiple tabs open, persistence can only be enabled
+        // in one tab at a a time.
+        // ...
+        console.error(err);
+      } else if (err.code === "unimplemented") {
+        // The current browser does not support all of the
+        // features required to enable persistence
+        // ...
+        console.error(err);
+      }
+    });
 } catch (err) {
   if (!/already exists/.test(err.message)) {
     console.error("Firebase initialization error", err.stack);
@@ -26,5 +51,4 @@ export const fbCore = firebase;
 
 export const auth = firebase.auth();
 export const db = firebase.firestore();
-export const rtdb = firebase.database();
 export const storage = firebase.storage();

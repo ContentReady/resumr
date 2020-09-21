@@ -7,7 +7,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { rtdb, auth } from "./Firebase";
+import { db, auth } from "./Firebase";
 import PDFIcon from "../assets/images/pdf.png";
 import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
@@ -54,18 +54,19 @@ export default function UserLibrary({ openContent }) {
     if (userContent.length) {
       return;
     }
-    rtdb
-      .ref(`users/${auth.currentUser.uid}/content`)
-      .orderByChild("lastPlayed")
-      .once("value")
+    db.collection("users")
+      .doc(auth.currentUser.uid)
+      .collection("content")
+      .orderBy("lastPlayed", "desc")
+      .get()
       .then((querySnapshot) => {
         const contentArray = [];
         querySnapshot.forEach((doc) => {
-          const obj = doc.val();
-          obj["id"] = doc.key;
+          const obj = doc.data();
+          obj["id"] = doc.id;
           contentArray.push(obj);
         });
-        setUserContent(contentArray.reverse());
+        setUserContent(contentArray);
       })
       .catch((e) => {
         console.error(e);
@@ -101,10 +102,10 @@ export default function UserLibrary({ openContent }) {
                   {row.title}
                 </TableCell>
                 {/* <TableCell component="th" scope="row">
-                {row.uploaded && new Date(row.uploaded).toLocaleString()}
+                {row.uploaded && row.uploaded.toDate().toLocaleString()}
               </TableCell> */}
                 <TableCell component="th" scope="row">
-                  {row.lastPlayed && new Date(row.lastPlayed).toLocaleString()}
+                  {row.lastPlayed && row.lastPlayed.toDate().toLocaleString()}
                 </TableCell>
                 <TableCell component="th" scope="row">
                   {row.type === "application/pdf"
