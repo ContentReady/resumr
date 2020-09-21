@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Typography } from "@material-ui/core";
-import ContentCard from "./ContentCard";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
 import { db, auth } from "./Firebase";
+import { Link } from "@reach/router";
+import PDFIcon from "../assets/images/pdf.png";
+import AudioIcon from "../assets/images/audio.png";
+import VideoIcon from "../assets/images/video.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,12 +27,19 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 140,
   },
+  table: {
+    minWidth: 650,
+  },
 }));
 
 export default function UserLibrary() {
-  const [spacing, setSpacing] = useState(2);
   const [userContent, setUserContent] = useState([]);
   const classes = useStyles();
+  const icons = {
+    "application/pdf": PDFIcon,
+    "audio/mpeg": AudioIcon,
+    "video/mp4": VideoIcon,
+  };
   useEffect(() => {
     if (userContent.length) {
       return;
@@ -31,6 +47,7 @@ export default function UserLibrary() {
     db.collection("users")
       .doc(auth.currentUser.uid)
       .collection("content")
+      .orderBy("lastPlayed", "desc")
       .get()
       .then((querySnapshot) => {
         const contentArray = [];
@@ -46,21 +63,57 @@ export default function UserLibrary() {
       });
   });
   return (
-    <>
-      <Typography className={classes.root} variant="h3" component="h2">
-        Your Uploads
-      </Typography>
-      <Grid container className={classes.root} spacing={2}>
-        <Grid item xs={12}>
-          <Grid container justify="center" spacing={spacing}>
-            {userContent.map((content) => (
-              <Grid key={content.id} item>
-                <ContentCard content={content} className={classes.card} />
-              </Grid>
-            ))}
-          </Grid>
-        </Grid>
-      </Grid>
-    </>
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Type</TableCell>
+            <TableCell>Title</TableCell>
+            {/* <TableCell>Uploaded</TableCell> */}
+            <TableCell>Last Played</TableCell>
+            <TableCell>Position</TableCell>
+            <TableCell align="right">Size&nbsp;(MB)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {userContent.length ? (
+            userContent.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell component="th" scope="row">
+                  {row.type && (
+                    <img width="32" src={icons[row.type]} alt={row.type} />
+                  )}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  <Link to={"/content/" + row.id}>{row.title}</Link>
+                </TableCell>
+                {/* <TableCell component="th" scope="row">
+                {row.uploaded && row.uploaded.toDate().toLocaleString()}
+              </TableCell> */}
+                <TableCell component="th" scope="row">
+                  {row.lastPlayed && row.lastPlayed.toDate().toLocaleString()}
+                </TableCell>
+                <TableCell component="th" scope="row">
+                  {row.type === "application/pdf"
+                    ? `${row.position} / ${row.totalLength} pages`
+                    : `${Math.floor(row.position / 60)}:${
+                        row.position % 60
+                      } / ${Math.floor(row.totalLength / 60)}:${
+                        row.totalLength % 60
+                      }`}
+                </TableCell>
+                <TableCell align="right">
+                  {(row.size / 10e6).toFixed(2)}
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell>Upload some content to get started!</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

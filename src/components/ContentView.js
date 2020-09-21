@@ -17,13 +17,15 @@ export default function ContentView({ id, title, type, source, position }) {
   let viewerWidth = window.innerWidth;
   const [lastSavedPosition, setLastSavedPosition] = useState(position);
 
-  const saveCurrentPosition = (position) => {
+  const saveCurrentPosition = (position, totalLength) => {
     db.collection("users")
       .doc(auth.currentUser.uid)
       .collection("content")
       .doc(id)
       .update({
-        position,
+        position: position,
+        totalLength: totalLength,
+        lastPlayed: new Date(),
       });
   };
 
@@ -32,15 +34,17 @@ export default function ContentView({ id, title, type, source, position }) {
     const audioEl = document.getElementById(`audio-${id}`);
     if (videoEl) {
       const currentTime = Math.floor(videoEl.currentTime);
+      const duration = Math.round(videoEl.duration);
       if (currentTime !== lastSavedPosition) {
         setLastSavedPosition(currentTime);
-        saveCurrentPosition(currentTime);
+        saveCurrentPosition(currentTime, duration);
       }
     } else if (audioEl) {
       const currentTime = Math.floor(audioEl.currentTime);
+      const duration = Math.round(audioEl.duration);
       if (currentTime !== lastSavedPosition) {
         setLastSavedPosition(currentTime);
-        saveCurrentPosition(currentTime);
+        saveCurrentPosition(currentTime, duration);
       }
     }
   };
@@ -50,9 +54,9 @@ export default function ContentView({ id, title, type, source, position }) {
       const videoEl = document.getElementById(`video-${id}`);
       const audioEl = document.getElementById(`audio-${id}`);
       if (videoEl) {
-        videoEl.currentTime = lastSavedPosition;
+        videoEl.currentTime = position;
       } else if (audioEl) {
-        audioEl.currentTime = lastSavedPosition;
+        audioEl.currentTime = position;
       }
     }
   }, [position]);
@@ -60,6 +64,8 @@ export default function ContentView({ id, title, type, source, position }) {
   if (viewerWidth > 1024) {
     viewerWidth *= 0.7;
   }
+
+  let contentEl;
 
   if (type.toLowerCase().includes("pdf")) {
     // Load PDF Viewer

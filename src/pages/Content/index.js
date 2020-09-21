@@ -59,37 +59,33 @@ export default function Content({ id }) {
   }
   return (
     <div>
-      <main>
-        <div direction="column" pad="medium">
-          <Typography
-            color="textSecondary"
-            variant="h2"
-            component="h2"
-            align="center"
-            className={classes.heading}
-          >
-            {content.title}
-          </Typography>
-          {sensibleUrl ? (
-            <ContentView
-              id={id}
-              title={content.title}
-              type={content.type}
-              position={content.position}
-              source={sensibleUrl}
-            />
-          ) : (
-            <Typography
-              variant="h5"
-              component="p"
-              color="textSecondary"
-              align="center"
-            >
-              Getting URL...
-            </Typography>
-          )}
-        </div>
-      </main>
+      {sensibleUrl ? (
+        <ContentView
+          id={id}
+          title={content.title}
+          type={content.type}
+          position={content.position}
+          source={sensibleUrl}
+        />
+      ) : (
+        <Typography
+          variant="h5"
+          component="p"
+          color="textSecondary"
+          align="center"
+        >
+          Loading file...
+        </Typography>
+      )}
+      <Typography
+        color="textSecondary"
+        variant="h5"
+        component="h1"
+        align="center"
+        className={classes.heading}
+      >
+        {content.title}
+      </Typography>
     </div>
   );
 }

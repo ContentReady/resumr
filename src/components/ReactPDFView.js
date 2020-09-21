@@ -77,7 +77,7 @@ export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
     if (pageNumber < numPages) {
       const newPageNumber = pageNumber + 1;
       setPageNumber(newPageNumber);
-      if (pageChange) pageChange(newPageNumber);
+      if (pageChange) pageChange(newPageNumber, numPages);
     }
   };
 
@@ -85,7 +85,7 @@ export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
     if (pageNumber > 1) {
       const newPageNumber = pageNumber - 1;
       setPageNumber(newPageNumber);
-      if (pageChange) pageChange(newPageNumber);
+      if (pageChange) pageChange(newPageNumber, numPages);
     }
   };
 
@@ -135,7 +135,8 @@ export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
           pageNumber={pageNumber}
           renderAnnotationLayer={false}
           renderMode="svg"
-          width={newWidth}
+          // width={newWidth}
+          maxHeight={0.8 * window.innerHeight}
         />
       </Document>
       <Button className={classes.maxBtn} onClick={handleFullscreenMode}>

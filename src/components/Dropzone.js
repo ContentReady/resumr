@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import logo from "../logo.svg";
 import { navigate } from "@reach/router";
 import { useDropzone } from "react-dropzone";
 import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import { storage, auth, db } from "./Firebase";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,6 +13,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    backgroundColor: "#EEEEEE",
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
@@ -21,8 +23,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Basic(props) {
   const classes = useStyles();
   const [uploading, setUploading] = useState(false);
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    accept: "application/pdf, audio/mp3, video/mp4",
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: ["application/pdf", "audio/mpeg", "video/mp4"],
     multiple: false,
     maxFiles: 1,
     onDropAccepted: (files) => {
@@ -36,6 +38,9 @@ export default function Basic(props) {
           title: file.name,
           source: `gs://resumr-8540b.appspot.com/${snapshot.metadata.fullPath}`,
           type: file.type,
+          size: file.size,
+          lastModified: file.lastModified,
+          uploaded: new Date(),
         };
         db.collection("users")
           .doc(auth.currentUser.uid)
@@ -54,16 +59,13 @@ export default function Basic(props) {
         <p>Uploading file. Please wait...</p>
       ) : (
         <div {...getRootProps({ className: "dropzone" })}>
-          <img src={logo} className="Home-logo" alt="logo" />
+          <CloudUploadIcon />
           <input
             {...getInputProps()}
             accept="application/pdf, audio/mp3, video/mp4"
           />
-          <Typography gutterBottom variant="h3" component="h3">
-            Click or drag &amp; drop to load a file.
-          </Typography>
-          <Typography gutterBottom variant="h5" component="h5">
-            Currently supported formats: PDF, MP4 and MP3
+          <Typography variant="h6" component="h4">
+            Upload a PDF, MP4 or MP3.
           </Typography>
         </div>
       )}
