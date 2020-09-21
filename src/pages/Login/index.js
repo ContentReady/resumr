@@ -10,7 +10,10 @@ const uiConfig = {
   signInFlow: "popup",
   autoUpgradeAnonymousUsers: true,
   signInSuccessUrl: "/",
-  signInOptions: [fbCore.auth.EmailAuthProvider.PROVIDER_ID],
+  signInOptions: [
+    fbCore.auth.EmailAuthProvider.PROVIDER_ID,
+    fbCore.auth.GoogleAuthProvider.PROVIDER_ID,
+  ],
   callbacks: {
     signInFailure: (error) => {
       console.log("signInFailure");
