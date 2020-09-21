@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Grid } from "@material-ui/core";
 import ReactPDFView from "./ReactPDFView";
 import { auth, db } from "./Firebase";
 
@@ -55,7 +55,7 @@ export default function ContentView({ id, title, type, source, position }) {
         audioEl.currentTime = lastSavedPosition;
       }
     }
-  });
+  }, [position]);
 
   if (viewerWidth > 1024) {
     viewerWidth *= 0.7;
@@ -99,50 +99,34 @@ export default function ContentView({ id, title, type, source, position }) {
   if (type.toLowerCase().includes("video")) {
     // Load HTML5 Video
     return (
-      <video
-        id={"video-" + id}
-        width={viewerWidth}
-        controls
-        src={source}
-        onTimeUpdate={onTimeUpdate}
-      >
-        Your browser does not support the video tag.
-      </video>
+      <Grid container alignItems="center" justify="center">
+        <video
+          id={"video-" + id}
+          width={viewerWidth}
+          controls
+          src={source}
+          onTimeUpdate={onTimeUpdate}
+        >
+          Your browser does not support the video tag.
+        </video>
+      </Grid>
     );
   }
 
   if (type.toLowerCase().includes("audio")) {
     // Load HTML5 Audio
     return (
-      <audio
-        id={"audio-" + id}
-        width={viewerWidth}
-        src={source}
-        controls
-        onTimeUpdate={onTimeUpdate}
-      >
-        Your browser does not support the audio element.
-      </audio>
-    );
-  }
-
-  if (type.toLowerCase().includes("x3d")) {
-    return (
-      <div
-        className="flex shadow-lg mb-3 justify-center items-center"
-        style={{
-          height: `${viewerHeight}px`,
-        }}
-        onClick={() => {
-          window.x3dom.reload();
-        }}
-      >
-        <x3d width={viewerWidth} height={viewerHeight}>
-          <scene>
-            <inline url={source}> </inline>
-          </scene>
-        </x3d>
-      </div>
+      <Grid container alignItems="center" justify="center">
+        <audio
+          id={"audio-" + id}
+          width={viewerWidth}
+          src={source}
+          controls
+          onTimeUpdate={onTimeUpdate}
+        >
+          Your browser does not support the audio element.
+        </audio>
+      </Grid>
     );
   }
 
