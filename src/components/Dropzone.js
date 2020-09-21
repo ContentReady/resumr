@@ -41,6 +41,7 @@ export default function Basic(props) {
           size: file.size,
           lastModified: file.lastModified,
           uploaded: new Date(),
+          lastPlayed: new Date(),
         };
         db.collection("users")
           .doc(auth.currentUser.uid)

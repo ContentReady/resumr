@@ -3,6 +3,7 @@ import { Router } from "@reach/router";
 import Home from "./pages/Home";
 import Content from "./pages/Content";
 import Login from "./pages/Login";
+import Help from "./pages/Help";
 import AuthGuard from "./components/AuthGuard";
 import Nav from "./components/Nav";
 import { Container } from "@material-ui/core";
@@ -15,6 +16,7 @@ function App() {
         <AuthGuard>
           <Router>
             <Home path="/" />
+            <Help path="/help" />
             <Content path="/content/:id" />
             <Login path="/login" />
           </Router>
