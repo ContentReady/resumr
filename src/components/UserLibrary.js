@@ -35,10 +35,21 @@ export default function UserLibrary({ openContent }) {
   const [userContent, setUserContent] = useState([]);
   const classes = useStyles();
   const icons = {
-    "application/pdf": PDFIcon,
-    "audio/mpeg": AudioIcon,
-    "video/mp4": VideoIcon,
+    pdf: PDFIcon,
+    audio: AudioIcon,
+    video: VideoIcon,
   };
+
+  const getContentType = (type) => {
+    if (type.toLowerCase().includes("pdf")) {
+      return "pdf";
+    } else if (type.toLowerCase().includes("audio")) {
+      return "audio";
+    } else if (type.toLowerCase().includes("video")) {
+      return "video";
+    }
+  };
+
   useEffect(() => {
     if (userContent.length) {
       return;
@@ -80,7 +91,11 @@ export default function UserLibrary({ openContent }) {
               <TableRow onClick={() => openContent(row.id)} key={row.id}>
                 <TableCell component="th" scope="row">
                   {row.type && (
-                    <img width="32" src={icons[row.type]} alt={row.type} />
+                    <img
+                      width="32"
+                      src={icons[getContentType(row.type)]}
+                      alt={row.type}
+                    />
                   )}
                 </TableCell>
                 <TableCell component="th" scope="row">
