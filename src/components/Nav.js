@@ -89,9 +89,7 @@ export default function Nav() {
           </IconButton>
 
           {user && user.email ? (
-            <Button variant="outlined" color="secondary" onClick={handleLogout}>
-              Logout
-            </Button>
+            <Button onClick={handleLogout}>Logout</Button>
           ) : (
             <Button
               variant="contained"
