@@ -19,7 +19,7 @@ export default function ContentView({ id, title, type, source, position }) {
   const saveCurrentPosition = (position, totalLength) => {};
 
   const onTimeUpdate = (event) => {
-    console.log(event);
+    // console.log(event);
     // const videoEl = document.getElementById(`video-${id}`);
     // const audioEl = document.getElementById(`audio-${id}`);
     // if (videoEl) {

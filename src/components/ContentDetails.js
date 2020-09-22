@@ -33,8 +33,8 @@ export default function ContentDetails({ id }) {
           // Our hosted contentUrl will need to be:
           // 1. Publicly accessible OR
           // 2. Hosted on Firebase with a gs:// URL
-          getFilebyId(id).then((url) => {
-            setSensibleUrl(url);
+          getFilebyId(id).then((data) => {
+            setSensibleUrl(window.URL.createObjectURL(data.blob));
           });
         })
         .catch((e) => {

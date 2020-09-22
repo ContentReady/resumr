@@ -47,11 +47,7 @@ const getFilebyId = async (contentId) => {
   if (!db.isOpen()) {
     db.open();
   }
-  const data = await db.blobs.get(contentId);
-  if (db.isOpen()) {
-    db.close();
-  }
-  return window.URL.createObjectURL(data.blob);
+  return db.blobs.get(contentId);
 };
 
 const getContentList = async () => {
