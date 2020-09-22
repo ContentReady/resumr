@@ -33,7 +33,7 @@ export default function Help() {
       </Typography>
 
       <Typography variant="body1" component="p" className={classes.paragraph}>
-        I hope you like it :-). If you do, please do share the love!
+        We hope you like it :-). If you do, please do share the love!
       </Typography>
       <Typography variant="body1" component="p" className={classes.paragraph}>
         Powered by{" "}

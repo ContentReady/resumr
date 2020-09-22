@@ -7,6 +7,17 @@ db.version(1).stores({
   blobs: "contentId, blob",
 });
 
+const updateMetadata = async (contentId, changes) => {
+  if (!db.isOpen()) {
+    db.open();
+  }
+  const promise = await db.metadata.update(contentId, changes);
+  if (db.isOpen()) {
+    db.close();
+  }
+  return promise;
+};
+
 const storeContent = async (file) => {
   const contentId = uuidv4();
   const contentDoc = {
@@ -76,6 +87,7 @@ const deleteContentById = (contentId) => {
 
 // export default offline;
 export {
+  updateMetadata,
   storeContent,
   getMetadataById,
   getFilebyId,
