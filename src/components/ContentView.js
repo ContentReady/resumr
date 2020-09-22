@@ -22,18 +22,10 @@ export default function ContentView({ id, title, type, source, position }) {
   };
 
   const onTimeUpdate = (event) => {
-    const videoEl = document.getElementById(`video-${id}`);
-    const audioEl = document.getElementById(`audio-${id}`);
-    if (videoEl) {
-      const currentTime = Math.floor(videoEl.currentTime);
-      const duration = Math.round(videoEl.duration);
-      if (currentTime !== lastSavedPosition) {
-        setLastSavedPosition(currentTime);
-        saveCurrentPosition(currentTime, duration);
-      }
-    } else if (audioEl) {
-      const currentTime = Math.floor(audioEl.currentTime);
-      const duration = Math.round(audioEl.duration);
+    const player = document.getElementById("player");
+    if (player) {
+      const currentTime = Math.floor(player.currentTime);
+      const duration = Math.round(player.duration);
       if (currentTime !== lastSavedPosition) {
         setLastSavedPosition(currentTime);
         saveCurrentPosition(currentTime, duration);
@@ -43,12 +35,9 @@ export default function ContentView({ id, title, type, source, position }) {
 
   useEffect(() => {
     if (position) {
-      const videoEl = document.getElementById(`video-${id}`);
-      const audioEl = document.getElementById(`audio-${id}`);
-      if (videoEl) {
-        videoEl.currentTime = position;
-      } else if (audioEl) {
-        audioEl.currentTime = position;
+      const player = document.getElementById("player");
+      if (player) {
+        player.currentTime = position;
       }
     }
   }, [position]);
@@ -72,6 +61,7 @@ export default function ContentView({ id, title, type, source, position }) {
     const youtubeId = source.split("/").pop();
     contentEl = (
       <iframe
+        id="player"
         className="my-4"
         title={title}
         width={viewerWidth * 0.7}
@@ -85,7 +75,7 @@ export default function ContentView({ id, title, type, source, position }) {
   } else if (type.toLowerCase().includes("video")) {
     contentEl = (
       <video
-        id={"video-" + id}
+        id="player"
         width={viewerWidth}
         controls
         src={source}
@@ -96,12 +86,7 @@ export default function ContentView({ id, title, type, source, position }) {
     );
   } else if (type.toLowerCase().includes("audio")) {
     contentEl = (
-      <audio
-        id={"audio-" + id}
-        src={source}
-        controls
-        onTimeUpdate={onTimeUpdate}
-      >
+      <audio id="player" src={source} controls onTimeUpdate={onTimeUpdate}>
         Your browser does not support the audio element.
       </audio>
     );
