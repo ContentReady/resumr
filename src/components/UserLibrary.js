@@ -56,13 +56,19 @@ export default function UserLibrary({ openContent }) {
       return;
     }
     getContentList().then((contentList) => {
-      contentList.map(async (docPromise) => {
-        docPromise.then((doc) => {
-          if (doc.title) {
-            setUserContent([...userContent, doc]);
-          }
-        });
+      const contentArray = [];
+      Promise.all(
+        contentList.map((docPromise) => {
+          return docPromise.then((doc) => {
+            if (doc.title) {
+              contentArray.push(doc);
+            }
+          });
+        })
+      ).then(() => {
+        setUserContent(contentArray);
       });
+      // setUserContent(contentArray);
       setDBRead(true);
     });
   });
@@ -73,7 +79,6 @@ export default function UserLibrary({ openContent }) {
           <TableRow>
             <TableCell>Type</TableCell>
             <TableCell>Title</TableCell>
-            {/* <TableCell>Uploaded</TableCell> */}
             <TableCell>Last Played</TableCell>
             <TableCell>Position</TableCell>
             <TableCell align="right">Size&nbsp;(MB)</TableCell>
@@ -98,9 +103,6 @@ export default function UserLibrary({ openContent }) {
                 <TableCell component="th" scope="row">
                   {row.title}
                 </TableCell>
-                {/* <TableCell component="th" scope="row">
-                {row.uploaded && new Date(row.uploaded).toLocaleString()}
-              </TableCell> */}
                 <TableCell component="th" scope="row">
                   {row.lastPlayed && new Date(row.lastPlayed).toLocaleString()}
                 </TableCell>

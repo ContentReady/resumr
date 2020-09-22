@@ -19,36 +19,37 @@ export default function ContentView({ id, title, type, source, position }) {
   const saveCurrentPosition = (position, totalLength) => {};
 
   const onTimeUpdate = (event) => {
-    const videoEl = document.getElementById(`video-${id}`);
-    const audioEl = document.getElementById(`audio-${id}`);
-    if (videoEl) {
-      const currentTime = Math.floor(videoEl.currentTime);
-      const duration = Math.round(videoEl.duration);
-      if (currentTime !== lastSavedPosition) {
-        setLastSavedPosition(currentTime);
-        saveCurrentPosition(currentTime, duration);
-      }
-    } else if (audioEl) {
-      const currentTime = Math.floor(audioEl.currentTime);
-      const duration = Math.round(audioEl.duration);
-      if (currentTime !== lastSavedPosition) {
-        setLastSavedPosition(currentTime);
-        saveCurrentPosition(currentTime, duration);
-      }
-    }
+    console.log(event);
+    // const videoEl = document.getElementById(`video-${id}`);
+    // const audioEl = document.getElementById(`audio-${id}`);
+    // if (videoEl) {
+    //   const currentTime = Math.floor(videoEl.currentTime);
+    //   const duration = Math.round(videoEl.duration);
+    //   if (currentTime !== lastSavedPosition) {
+    //     setLastSavedPosition(currentTime);
+    //     // saveCurrentPosition(currentTime, duration);
+    //   }
+    // } else if (audioEl) {
+    //   const currentTime = Math.floor(audioEl.currentTime);
+    //   const duration = Math.round(audioEl.duration);
+    //   if (currentTime !== lastSavedPosition) {
+    //     setLastSavedPosition(currentTime);
+    //     // saveCurrentPosition(currentTime, duration);
+    //   }
+    // }
   };
 
-  useEffect(() => {
-    if (position) {
-      const videoEl = document.getElementById(`video-${id}`);
-      const audioEl = document.getElementById(`audio-${id}`);
-      if (videoEl) {
-        videoEl.currentTime = position;
-      } else if (audioEl) {
-        audioEl.currentTime = position;
-      }
-    }
-  }, [position]);
+  // useEffect(() => {
+  //   if (position) {
+  //     const videoEl = document.getElementById(`video-${id}`);
+  //     const audioEl = document.getElementById(`audio-${id}`);
+  //     if (videoEl) {
+  //       videoEl.currentTime = position;
+  //     } else if (audioEl) {
+  //       audioEl.currentTime = position;
+  //     }
+  //   }
+  // }, [position]);
 
   if (viewerWidth > 1024) {
     viewerWidth *= 0.7;
