@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { makeStyles, Grid } from "@material-ui/core";
+import { makeStyles, Grid, IconButton, ButtonGroup } from "@material-ui/core";
+import Replay30Icon from "@material-ui/icons/Replay30";
+import Forward30Icon from "@material-ui/icons/Forward30";
 import ReactPDFView from "./ReactPDFView";
 import { updateMetadata } from "./DB";
 
@@ -31,6 +33,15 @@ export default function ContentView({ id, title, type, source, position }) {
         saveCurrentPosition(currentTime, duration);
       }
     }
+  };
+
+  const goBack = () => {
+    const player = document.getElementById("player");
+    player.currentTime -= 30;
+  };
+  const goForward = () => {
+    const player = document.getElementById("player");
+    player.currentTime += 30;
   };
 
   useEffect(() => {
@@ -74,21 +85,49 @@ export default function ContentView({ id, title, type, source, position }) {
     );
   } else if (type.toLowerCase().includes("video")) {
     contentEl = (
-      <video
-        id="player"
-        width={viewerWidth}
-        controls
-        src={source}
-        onTimeUpdate={onTimeUpdate}
-      >
-        Your browser does not support the video tag.
-      </video>
+      <>
+        <video
+          id="player"
+          width={viewerWidth}
+          controls
+          src={source}
+          onTimeUpdate={onTimeUpdate}
+        >
+          Your browser does not support the video tag.
+        </video>
+        <ButtonGroup
+          size="large"
+          color="primary"
+          aria-label="large outlined primary button group"
+        >
+          <IconButton onClick={goBack}>
+            <Replay30Icon />
+          </IconButton>
+          <IconButton onClick={goForward}>
+            <Forward30Icon />
+          </IconButton>
+        </ButtonGroup>
+      </>
     );
   } else if (type.toLowerCase().includes("audio")) {
     contentEl = (
-      <audio id="player" src={source} controls onTimeUpdate={onTimeUpdate}>
-        Your browser does not support the audio element.
-      </audio>
+      <>
+        <audio id="player" src={source} controls onTimeUpdate={onTimeUpdate}>
+          Your browser does not support the audio element.
+        </audio>
+        <ButtonGroup
+          size="medium"
+          color="primary"
+          aria-label="large outlined primary button group"
+        >
+          <IconButton onClick={goBack}>
+            <Replay30Icon />
+          </IconButton>
+          <IconButton onClick={goForward}>
+            <Forward30Icon />
+          </IconButton>
+        </ButtonGroup>
+      </>
     );
   }
 
