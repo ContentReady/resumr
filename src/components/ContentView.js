@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { makeStyles, Grid } from "@material-ui/core";
 import ReactPDFView from "./ReactPDFView";
-import { auth, rtdb } from "./Firebase";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -17,13 +16,7 @@ export default function ContentView({ id, title, type, source, position }) {
   let viewerWidth = window.innerWidth;
   const [lastSavedPosition, setLastSavedPosition] = useState(position);
 
-  const saveCurrentPosition = (position, totalLength) => {
-    rtdb.ref(`users/${auth.currentUser.uid}/content/${id}`).update({
-      position: position,
-      totalLength: totalLength,
-      lastPlayed: new Date(),
-    });
-  };
+  const saveCurrentPosition = (position, totalLength) => {};
 
   const onTimeUpdate = (event) => {
     const videoEl = document.getElementById(`video-${id}`);

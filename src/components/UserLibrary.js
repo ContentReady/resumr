@@ -7,11 +7,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { rtdb, auth } from "./Firebase";
 import PDFIcon from "../assets/images/pdf.png";
 import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
-import { offlineList } from "./OfflineRTDB";
+import { getContentList } from "./DB";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UserLibrary({ openContent }) {
   const [userContent, setUserContent] = useState([]);
+  const [dbRead, setDBRead] = useState(false);
   const classes = useStyles();
   const icons = {
     pdf: PDFIcon,
@@ -52,16 +52,19 @@ export default function UserLibrary({ openContent }) {
   };
 
   useEffect(() => {
-    if (userContent.length) {
+    if (dbRead) {
       return;
     }
-    offlineList()
-      .then((contentArray) => {
-        setUserContent(contentArray.reverse());
-      })
-      .catch((e) => {
-        console.error(e);
+    getContentList().then((contentList) => {
+      contentList.map(async (docPromise) => {
+        docPromise.then((doc) => {
+          if (doc.title) {
+            setUserContent([...userContent, doc]);
+          }
+        });
       });
+      setDBRead(true);
+    });
   });
   return (
     <TableContainer component={Paper}>
@@ -79,7 +82,10 @@ export default function UserLibrary({ openContent }) {
         <TableBody>
           {userContent.length ? (
             userContent.map((row) => (
-              <TableRow onClick={() => openContent(row.id)} key={row.id}>
+              <TableRow
+                onClick={() => openContent(row.contentId)}
+                key={row.contentId}
+              >
                 <TableCell component="th" scope="row">
                   {row.type && (
                     <img
@@ -99,13 +105,15 @@ export default function UserLibrary({ openContent }) {
                   {row.lastPlayed && new Date(row.lastPlayed).toLocaleString()}
                 </TableCell>
                 <TableCell component="th" scope="row">
-                  {row.type === "application/pdf"
-                    ? `${row.position} / ${row.totalLength} pages`
-                    : `${Math.floor(row.position / 60)}:${
-                        row.position % 60
-                      } / ${Math.floor(row.totalLength / 60)}:${
-                        row.totalLength % 60
-                      }`}
+                  {row.position && row.totalLength
+                    ? row.type === "application/pdf"
+                      ? `${row.position} / ${row.totalLength} pages`
+                      : `${Math.floor(row.position / 60)}:${
+                          row.position % 60
+                        } / ${Math.floor(row.totalLength / 60)}:${
+                          row.totalLength % 60
+                        }`
+                    : ""}
                 </TableCell>
                 <TableCell align="right">
                   {(row.size / 10e6).toFixed(2)}

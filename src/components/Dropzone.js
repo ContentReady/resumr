@@ -4,9 +4,8 @@ import { useDropzone } from "react-dropzone";
 import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import { storage, auth, rtdb } from "./Firebase";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import { v4 as uuidv4 } from "uuid";
+import { storeContent } from "./DB";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,29 +27,11 @@ export default function Basic(props) {
     accept: "application/pdf, audio/*, video/*",
     multiple: false,
     maxFiles: 1,
-    onDropAccepted: (files) => {
+    onDropAccepted: async (files) => {
       setUploading(true);
       const file = files[0];
-      const fileRef = storage
-        .ref()
-        .child(`${auth.currentUser.uid}/uploads/${file.name}`);
-      fileRef.put(file).then((snapshot) => {
-        const payload = {
-          title: file.name,
-          source: `gs://resumr-8540b.appspot.com/${snapshot.metadata.fullPath}`,
-          type: file.type,
-          size: file.size,
-          lastModified: file.lastModified,
-          uploaded: new Date(),
-        };
-        const contentId = uuidv4();
-        rtdb
-          .ref(`users/${auth.currentUser.uid}/content/${contentId}`)
-          .set(payload)
-          .then(() => {
-            navigate(`/content/${contentId}`);
-          });
-      });
+      const contentId = await storeContent(file);
+      navigate(`/content/${contentId}`);
     },
   });
 
