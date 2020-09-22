@@ -66,9 +66,19 @@ const getContentList = async () => {
 };
 
 const deleteContentById = (contentId) => {
-  const deleteReq = db.blobs.where("contentId").equals(contentId).delete();
-  return deleteReq;
+  if (!db.isOpen()) {
+    db.open();
+  }
+  return db.blobs.delete(contentId).then(() => {
+    db.metadata.delete(contentId);
+  });
 };
 
 // export default offline;
-export { storeContent, getMetadataById, getFilebyId, getContentList };
+export {
+  storeContent,
+  getMetadataById,
+  getFilebyId,
+  getContentList,
+  deleteContentById,
+};
