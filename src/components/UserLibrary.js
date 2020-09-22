@@ -17,7 +17,7 @@ export default function UserLibrary() {
       Promise.all(
         contentList.map((docPromise) => {
           return docPromise.then((doc) => {
-            if (doc.title) {
+            if (doc && doc.title) {
               contentArray.push(doc);
             }
           });
@@ -30,11 +30,8 @@ export default function UserLibrary() {
   });
 
   const deleteRow = (contentId) => {
-    deleteContentById(contentId).then(() => {
-      const updatedContent = userContent.filter(
-        (content) => content.contentId !== contentId
-      );
-      setUserContent(updatedContent);
+    return deleteContentById(contentId).then(() => {
+      setDBRead(false);
     });
   };
 

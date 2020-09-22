@@ -293,9 +293,13 @@ export default function EnhancedTable({ rows, deleteContentById }) {
 
   const onDelete = () => {
     // console.log("deleting", selected);
-    selected.map((contentId) => {
+    Promise.all(
+      selected.map((contentId) => {
+        // rows = rows.filter((row) => row.contentId !== contentId);
+        return deleteContentById(contentId);
+      })
+    ).then(() => {
       setSelected([]);
-      return deleteContentById(contentId);
     });
   };
 
