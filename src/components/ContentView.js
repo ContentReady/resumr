@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
   },
+  button: {
+    margin: theme.spacing(1),
+  },
 }));
 
 export default function ContentView({ id, title, type, source, position }) {
@@ -85,7 +88,7 @@ export default function ContentView({ id, title, type, source, position }) {
     );
   } else if (type.toLowerCase().includes("video")) {
     contentEl = (
-      <>
+      <Grid container direction="column" justify="center" alignItems="center">
         <video
           id="player"
           width={viewerWidth}
@@ -100,18 +103,18 @@ export default function ContentView({ id, title, type, source, position }) {
           color="primary"
           aria-label="large outlined primary button group"
         >
-          <IconButton onClick={goBack}>
+          <IconButton color="primary" onClick={goBack}>
             <Replay30Icon />
           </IconButton>
-          <IconButton onClick={goForward}>
+          <IconButton color="primary" onClick={goForward}>
             <Forward30Icon />
           </IconButton>
         </ButtonGroup>
-      </>
+      </Grid>
     );
   } else if (type.toLowerCase().includes("audio")) {
     contentEl = (
-      <>
+      <Grid container direction="column" justify="center" alignItems="center">
         <audio id="player" src={source} controls onTimeUpdate={onTimeUpdate}>
           Your browser does not support the audio element.
         </audio>
@@ -120,14 +123,14 @@ export default function ContentView({ id, title, type, source, position }) {
           color="primary"
           aria-label="large outlined primary button group"
         >
-          <IconButton onClick={goBack}>
+          <IconButton color="primary" onClick={goBack}>
             <Replay30Icon />
           </IconButton>
-          <IconButton onClick={goForward}>
+          <IconButton color="primary" onClick={goForward}>
             <Forward30Icon />
           </IconButton>
         </ButtonGroup>
-      </>
+      </Grid>
     );
   }
 
