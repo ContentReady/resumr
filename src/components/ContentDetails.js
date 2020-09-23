@@ -6,8 +6,7 @@ import {
   Grid,
   Paper,
 } from "@material-ui/core";
-import offline from "./OfflineStorage";
-import offlineDoc from "./OfflineRTDB";
+import { getMetadataById, getFilebyId } from "./DB";
 import ContentView from "./ContentView";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,19 +27,15 @@ export default function ContentDetails({ id }) {
   const [sensibleUrl, setSensibleUrl] = useState("");
   useEffect(() => {
     if (id) {
-      offlineDoc(id)
+      getMetadataById(id)
         .then((data) => {
           setContent(data);
           // Our hosted contentUrl will need to be:
           // 1. Publicly accessible OR
           // 2. Hosted on Firebase with a gs:// URL
-          if (data.source.startsWith("gs://")) {
-            offline(data.source).then((url) => {
-              setSensibleUrl(url);
-            });
-          } else {
-            setSensibleUrl(data.source);
-          }
+          getFilebyId(id).then((data) => {
+            setSensibleUrl(window.URL.createObjectURL(data.blob));
+          });
         })
         .catch((e) => {
           console.error(e);

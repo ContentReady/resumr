@@ -1,81 +1,80 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { makeStyles, Grid } from "@material-ui/core";
-import ReactPDFView from "./ReactPDFView";
-import { auth, rtdb } from "./Firebase";
+import { makeStyles, Grid, IconButton, ButtonGroup } from "@material-ui/core";
+import Replay30Icon from "@material-ui/icons/Replay30";
+import Forward30Icon from "@material-ui/icons/Forward30";
+import { updateMetadata } from "./DB";
+import AdobePdfViewer from "./AdobePDFView";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
     justifyContent: "center",
   },
+  button: {
+    margin: theme.spacing(1),
+  },
 }));
 
 export default function ContentView({ id, title, type, source, position }) {
   const classes = useStyles();
-  const viewerHeight = window.innerHeight;
-  let viewerWidth = window.innerWidth;
+  const viewerHeight = 0.8 * window.innerHeight;
+  let viewerWidth = 0.9 * window.innerWidth;
   const [lastSavedPosition, setLastSavedPosition] = useState(position);
 
   const saveCurrentPosition = (position, totalLength) => {
-    rtdb.ref(`users/${auth.currentUser.uid}/content/${id}`).update({
-      position: position,
-      totalLength: totalLength,
-      lastPlayed: new Date(),
-    });
+    updateMetadata(id, { position, totalLength });
   };
 
   const onTimeUpdate = (event) => {
-    const videoEl = document.getElementById(`video-${id}`);
-    const audioEl = document.getElementById(`audio-${id}`);
-    if (videoEl) {
-      const currentTime = Math.floor(videoEl.currentTime);
-      const duration = Math.round(videoEl.duration);
-      if (currentTime !== lastSavedPosition) {
-        setLastSavedPosition(currentTime);
-        saveCurrentPosition(currentTime, duration);
-      }
-    } else if (audioEl) {
-      const currentTime = Math.floor(audioEl.currentTime);
-      const duration = Math.round(audioEl.duration);
+    const player = document.getElementById("player");
+    if (player) {
+      const currentTime = Math.floor(player.currentTime);
+      const duration = Math.round(player.duration);
       if (currentTime !== lastSavedPosition) {
         setLastSavedPosition(currentTime);
         saveCurrentPosition(currentTime, duration);
       }
     }
+  };
+
+  const goBack = () => {
+    const player = document.getElementById("player");
+    player.currentTime -= 30;
+  };
+  const goForward = () => {
+    const player = document.getElementById("player");
+    player.currentTime += 30;
   };
 
   useEffect(() => {
     if (position) {
-      const videoEl = document.getElementById(`video-${id}`);
-      const audioEl = document.getElementById(`audio-${id}`);
-      if (videoEl) {
-        videoEl.currentTime = position;
-      } else if (audioEl) {
-        audioEl.currentTime = position;
+      const player = document.getElementById("player");
+      if (player) {
+        player.currentTime = position;
       }
     }
   }, [position]);
-
-  if (viewerWidth > 1024) {
-    viewerWidth *= 0.7;
-  }
 
   let contentEl = <p>Loading content...</p>;
 
   if (type.toLowerCase().includes("pdf")) {
     contentEl = (
-      <ReactPDFView
-        fileUrl={source}
-        width={viewerWidth}
-        position={position}
-        pageChange={saveCurrentPosition}
-      />
+      <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
+        <AdobePdfViewer
+          id={id}
+          url={source}
+          fileName={`${title}.pdf`}
+          position={position}
+          onPageChange={saveCurrentPosition}
+        />
+      </div>
     );
   } else if (type.toLowerCase().includes("youtube")) {
     const youtubeId = source.split("/").pop();
     contentEl = (
       <iframe
+        id="player"
         className="my-4"
         title={title}
         width={viewerWidth * 0.7}
@@ -88,26 +87,49 @@ export default function ContentView({ id, title, type, source, position }) {
     );
   } else if (type.toLowerCase().includes("video")) {
     contentEl = (
-      <video
-        id={"video-" + id}
-        width={viewerWidth}
-        controls
-        src={source}
-        onTimeUpdate={onTimeUpdate}
-      >
-        Your browser does not support the video tag.
-      </video>
+      <Grid container direction="column" justify="center" alignItems="center">
+        <video
+          id="player"
+          width={viewerWidth}
+          controls
+          src={source}
+          onTimeUpdate={onTimeUpdate}
+        >
+          Your browser does not support the video tag.
+        </video>
+        <ButtonGroup
+          size="large"
+          color="primary"
+          aria-label="large outlined primary button group"
+        >
+          <IconButton color="primary" onClick={goBack}>
+            <Replay30Icon />
+          </IconButton>
+          <IconButton color="primary" onClick={goForward}>
+            <Forward30Icon />
+          </IconButton>
+        </ButtonGroup>
+      </Grid>
     );
   } else if (type.toLowerCase().includes("audio")) {
     contentEl = (
-      <audio
-        id={"audio-" + id}
-        src={source}
-        controls
-        onTimeUpdate={onTimeUpdate}
-      >
-        Your browser does not support the audio element.
-      </audio>
+      <Grid container direction="column" justify="center" alignItems="center">
+        <audio id="player" src={source} controls onTimeUpdate={onTimeUpdate}>
+          Your browser does not support the audio element.
+        </audio>
+        <ButtonGroup
+          size="medium"
+          color="primary"
+          aria-label="large outlined primary button group"
+        >
+          <IconButton color="primary" onClick={goBack}>
+            <Replay30Icon />
+          </IconButton>
+          <IconButton color="primary" onClick={goForward}>
+            <Forward30Icon />
+          </IconButton>
+        </ButtonGroup>
+      </Grid>
     );
   }
 
