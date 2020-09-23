@@ -18,6 +18,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import CreateIcon from "@material-ui/icons/Create";
 import PDFIcon from "../assets/images/pdf.png";
 import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
@@ -148,7 +149,7 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-const EnhancedTableToolbar = ({ numSelected, onDelete }) => {
+const EnhancedTableToolbar = ({ numSelected, onDelete, editContentTitle }) => {
   const classes = useToolbarStyles();
 
   return (
@@ -177,6 +178,14 @@ const EnhancedTableToolbar = ({ numSelected, onDelete }) => {
         </Typography>
       )}
 
+      {numSelected === 1 && (
+        <Tooltip title="Edit name">
+          <IconButton aria-label="edit name" onClick={editContentTitle}>
+            <CreateIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton aria-label="delete" onClick={onDelete}>
@@ -197,6 +206,7 @@ const EnhancedTableToolbar = ({ numSelected, onDelete }) => {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onDelete: PropTypes.func,
+  editContentTitle: PropTypes.func,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -223,7 +233,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EnhancedTable({ rows, deleteContentById }) {
+export default function EnhancedTable({
+  rows,
+  deleteContentById,
+  editContentTitle,
+}) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("desc");
   const [orderBy, setOrderBy] = React.useState("lastPlayed");
@@ -303,6 +317,17 @@ export default function EnhancedTable({ rows, deleteContentById }) {
     });
   };
 
+  const onEdit = () => {
+    Promise.all(
+      selected.map((contentId) => {
+        // rows = rows.filter((row) => row.contentId !== contentId);
+        return editContentTitle(contentId);
+      })
+    ).then(() => {
+      setSelected([]);
+    });
+  };
+
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
@@ -314,6 +339,7 @@ export default function EnhancedTable({ rows, deleteContentById }) {
         <EnhancedTableToolbar
           numSelected={selected.length}
           onDelete={onDelete}
+          editContentTitle={onEdit}
         />
         <TableContainer>
           <Table
@@ -420,4 +446,6 @@ export default function EnhancedTable({ rows, deleteContentById }) {
 
 EnhancedTable.propTypes = {
   rows: PropTypes.array.isRequired,
+  deleteContentById: PropTypes.func,
+  editContentTitle: PropTypes.func,
 };

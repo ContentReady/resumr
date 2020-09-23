@@ -3,8 +3,6 @@ import Dropzone from "../../components/Dropzone";
 import UserLibrary from "../../components/UserLibrary";
 import { makeStyles } from "@material-ui/core/styles";
 import { navigate } from "@reach/router";
-// import pixel from "../../assets/images/pixel.pdf";
-// import AdobePdfViewer from "../../components/AdobePDFView";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,9 +27,6 @@ function Home() {
     <div className={classes.root}>
       <Dropzone />
       <UserLibrary openContent={openContent} />
-      {/* <div style={{ display: "none" }}>
-        <AdobePdfViewer id="dummy" url={pixel} fileName="pixel.pdf" />
-      </div> */}
     </div>
   );
 }
