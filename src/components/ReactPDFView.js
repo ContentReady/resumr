@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { pdfjs, Document, Page } from "react-pdf";
+import { pdfjs, Document, Outline, Page } from "react-pdf";
 import { ButtonGroup, Button, Grid, makeStyles, Fade } from "@material-ui/core";
 import FullscreenIcon from "@material-ui/icons/Fullscreen";
 import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
@@ -128,15 +128,20 @@ export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
     setNumPages(pages);
   }
 
+  function onItemClick({ pageNumber: itemPageNumber }) {
+    setPageNumber(itemPageNumber);
+  }
+
   const body = (
     <div ref={pdfRef}>
       <Document file={fileUrl} onLoadSuccess={onDocumentLoadSuccess}>
         <Page
-          pageNumber={pageNumber}
+          pageNumber={pageNumber || 1}
           renderAnnotationLayer={false}
           renderMode="svg"
           width={newWidth}
         />
+        <Outline onItemClick={onItemClick} />
       </Document>
       <Button className={classes.maxBtn} onClick={handleFullscreenMode}>
         {open ? <FullscreenExitIcon /> : <FullscreenIcon />}
