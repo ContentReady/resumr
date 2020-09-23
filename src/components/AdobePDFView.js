@@ -22,7 +22,7 @@ class ViewSDKClient {
 
   previewFile(divId, url, fileName, viewerConfig, onPageChange) {
     const config = {
-      clientId: "b2dadc9019db4678992d52f61c76f7b7",
+      clientId: "9c0d356e1d7e4ffd9910aebe946117ac",
     };
     if (divId) {
       /* Optional only for Light Box embed mode */
