@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { makeStyles, Grid, IconButton, ButtonGroup } from "@material-ui/core";
 import Replay30Icon from "@material-ui/icons/Replay30";
 import Forward30Icon from "@material-ui/icons/Forward30";
-import ReactPDFView from "./ReactPDFView";
 import { updateMetadata } from "./DB";
+import AdobePdfViewer from "./AdobePDFView";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ContentView({ id, title, type, source, position }) {
   const classes = useStyles();
-  const viewerHeight = window.innerHeight;
-  let viewerWidth = window.innerWidth;
+  const viewerHeight = 0.8 * window.innerHeight;
+  let viewerWidth = 0.9 * window.innerWidth;
   const [lastSavedPosition, setLastSavedPosition] = useState(position);
 
   const saveCurrentPosition = (position, totalLength) => {
@@ -56,20 +56,19 @@ export default function ContentView({ id, title, type, source, position }) {
     }
   }, [position]);
 
-  if (viewerWidth > 1024) {
-    viewerWidth *= 0.7;
-  }
-
   let contentEl = <p>Loading content...</p>;
 
   if (type.toLowerCase().includes("pdf")) {
     contentEl = (
-      <ReactPDFView
-        fileUrl={source}
-        width={viewerWidth}
-        position={position}
-        pageChange={saveCurrentPosition}
-      />
+      <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
+        <AdobePdfViewer
+          id={id}
+          url={source}
+          fileName={`${title}.pdf`}
+          position={position}
+          onPageChange={saveCurrentPosition}
+        />
+      </div>
     );
   } else if (type.toLowerCase().includes("youtube")) {
     const youtubeId = source.split("/").pop();
