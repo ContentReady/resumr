@@ -87,14 +87,7 @@ export default class AdobePdfViewer extends Component {
           this.props.id,
           this.props.url,
           this.props.fileName,
-          {
-            embedMode: "SIZED_CONTAINER",
-            dockPageControls: false,
-            showPageControls: true,
-            showDownloadPDF: false,
-            defaultViewMode: "FIT_PAGE",
-            showPrintPDF: true,
-          },
+          { embedMode: "IN_LINE", showDownloadPDF: false, showPrintPDF: false },
           onPageChange
         )
         .then((adobeViewer) => {
