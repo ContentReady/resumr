@@ -81,13 +81,24 @@ export default class AdobePdfViewer extends Component {
     };
     const viewSDKClient = new ViewSDKClient();
     viewSDKClient.ready().then(() => {
+      let viewerOptions = {
+        showAnnotationTools: false,
+        dockPageControls: false,
+      };
+      if (window.innerWidth <= 480) {
+        viewerOptions = {
+          embedMode: "IN_LINE",
+          showDownloadPDF: false,
+          showPrintPDF: false,
+        };
+      }
       /* Invoke file preview */
       viewSDKClient
         .previewFile(
           this.props.id,
           this.props.url,
           this.props.fileName,
-          { embedMode: "IN_LINE", showDownloadPDF: false, showPrintPDF: false },
+          viewerOptions,
           onPageChange
         )
         .then((adobeViewer) => {
