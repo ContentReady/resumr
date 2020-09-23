@@ -5,6 +5,7 @@ import Replay30Icon from "@material-ui/icons/Replay30";
 import Forward30Icon from "@material-ui/icons/Forward30";
 import { updateMetadata } from "./DB";
 import AdobePdfViewer from "./AdobePDFView";
+import ReactPDFView from "./ReactPDFView";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -59,17 +60,28 @@ export default function ContentView({ id, title, type, source, position }) {
   let contentEl = <p>Loading content...</p>;
 
   if (type.toLowerCase().includes("pdf")) {
-    contentEl = (
-      <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
-        <AdobePdfViewer
-          id={id}
-          url={source}
-          fileName={`${title}.pdf`}
+    if (window.navigator.onLine) {
+      contentEl = (
+        <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
+          <AdobePdfViewer
+            id={id}
+            url={source}
+            fileName={`${title}.pdf`}
+            position={position}
+            onPageChange={saveCurrentPosition}
+          />
+        </div>
+      );
+    } else {
+      contentEl = (
+        <ReactPDFView
+          fileUrl={source}
+          width={viewerWidth}
           position={position}
-          onPageChange={saveCurrentPosition}
+          pageChange={saveCurrentPosition}
         />
-      </div>
-    );
+      );
+    }
   } else if (type.toLowerCase().includes("youtube")) {
     const youtubeId = source.split("/").pop();
     contentEl = (
