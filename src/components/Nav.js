@@ -11,7 +11,10 @@ import logo from "../logo.svg";
 import HelpIcon from "@material-ui/icons/Help";
 import ShareIcon from "@material-ui/icons/Share";
 import TwitterIcon from "@material-ui/icons/Twitter";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import SyncIcon from "@material-ui/icons/Sync";
 import { auth } from "./Firebase";
+import { syncContent } from "./DB";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,6 +75,11 @@ export default function Nav() {
           <Link to="/" className={classes.title}>
             <img src={logo} alt="Resumer" width="64" />
           </Link>
+          {user && user.uid && (
+            <IconButton aria-label="sync" onClick={syncContent}>
+              <SyncIcon />
+            </IconButton>
+          )}
           {navigator.share ? (
             <IconButton aria-label="share" onClick={shareApp}>
               <ShareIcon />
@@ -86,21 +94,18 @@ export default function Nav() {
             <HelpIcon />
           </IconButton>
           {user && user.uid ? (
-            <Button
-              // variant="contained"
-              // color="secondary"
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
+            <IconButton aria-label="logout" onClick={handleLogout}>
+              <ExitToAppIcon />
+            </IconButton>
           ) : (
             <Button
               variant="contained"
               color="secondary"
+              aria-label="login"
               component={Link}
               to="/login"
             >
-              Login To Sync
+              Login
             </Button>
           )}
         </Toolbar>

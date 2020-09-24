@@ -17,7 +17,6 @@ const uiConfig = {
   ],
   callbacks: {
     signInFailure: (error) => {
-      console.log("signInFailure");
       if (error.code !== "firebaseui/anonymous-upgrade-merge-conflict") {
         return Promise.resolve();
       }

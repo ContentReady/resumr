@@ -10,18 +10,12 @@ db.version(1).stores({
 });
 
 const updateMetadata = async (contentId, changes) => {
-  // if (!db.isOpen()) {
-  //   db.open();
-  // }
   const promise = await db.metadata.update(contentId, changes);
   if (auth.currentUser) {
     rtdb
       .ref(`users/${auth.currentUser.uid}/content/${contentId}`)
       .update(changes);
   }
-  // if (db.isOpen()) {
-  //   //db.close();
-  // }
   return promise;
 };
 
@@ -36,9 +30,6 @@ const storeContent = async (file) => {
     uploaded: new Date(),
     lastPlayed: new Date(),
   };
-  // if (!db.isOpen()) {
-  //   db.open();
-  // }
   db.metadata.put(contentDoc);
   db.blobs.put({
     contentId: contentId,
@@ -55,22 +46,12 @@ const storeContent = async (file) => {
       .child(`${auth.currentUser.uid}/uploads/${contentId}`)
       .put(file);
   }
-
-  // if (db.isOpen()) {
-  //   //db.close();
-  // }
   return contentId;
 };
 
 const getMetadataById = async (contentId) => {
-  // if (!db.isOpen()) {
-  //   db.open();
-  // }
   try {
     const doc = await db.metadata.get(contentId);
-    // if (db.isOpen()) {
-    //   //db.close();
-    // }
     if (!doc)
       throw Error("Content not found locally. Will retrieve from remote DB.");
     return doc;
@@ -92,14 +73,8 @@ const getMetadataById = async (contentId) => {
 };
 
 const getFilebyId = async (contentId) => {
-  // if (!db.isOpen()) {
-  //   db.open();
-  // }
   try {
     const data = await db.blobs.get(contentId);
-    // if (db.isOpen()) {
-    //   //db.close();
-    // }
     if (!data.blob)
       throw Error("File not found locally. Will retrieve from remote storage.");
     return data.blob;
@@ -129,22 +104,66 @@ const getFilebyId = async (contentId) => {
 };
 
 const syncContent = () => {
-  // if (!db.isOpen()) {
-  //   db.open();
-  // }
-  return rtdb
-    .ref(`users/${auth.currentUser.uid}/content`)
-    .orderByChild("lastPlayed")
-    .once("value")
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const obj = doc.val();
-        obj["contentId"] = doc.key;
-        db.metadata.put(obj);
-      });
-      // if (db.isOpen()) {
-      //   //db.close();
-      // }
+  let localContentIds = [];
+  let remoteContentIds = [];
+  let shouldReload = false;
+  db.metadata
+    .orderBy("contentId")
+    .keys()
+    .then((contentIds) => {
+      localContentIds = contentIds;
+      // sync from remote to local
+      rtdb
+        .ref(`users/${auth.currentUser.uid}/content`)
+        .orderByChild("contentId")
+        .once("value")
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const obj = doc.val();
+            const contentId = doc.key;
+            remoteContentIds.push(contentId);
+            obj["contentId"] = contentId;
+            if (!localContentIds.includes(contentId)) {
+              // Add to indexedDB
+              db.metadata.put(obj);
+              shouldReload = true;
+            }
+          });
+        })
+        .then(() => {
+          // sync from local to remote
+          // console.log(localContentIds, remoteContentIds);
+          Promise.all(
+            localContentIds.map((contentId) => {
+              if (!remoteContentIds.includes(contentId)) {
+                // This will be the case if user signs up after a while or uploads content while signed out
+                console.log("Should upload:", contentId);
+                return db.blobs.get(contentId).then(({ blob }) => {
+                  const file = new File([blob], contentId);
+                  storage
+                    .ref()
+                    .child(`${auth.currentUser.uid}/uploads/${contentId}`)
+                    .put(file)
+                    .then(() => {
+                      console.log("Uploaded:", contentId);
+                      return db.metadata.get(contentId).then((contentDoc) => {
+                        return rtdb
+                          .ref(
+                            `users/${auth.currentUser.uid}/content/${contentId}`
+                          )
+                          .set(contentDoc);
+                      });
+                    });
+                });
+              }
+              return true;
+            })
+          ).then(() => {
+            if (shouldReload) {
+              window.location.reload();
+            }
+          });
+        });
     })
     .catch((e) => {
       console.error(e);
@@ -152,27 +171,18 @@ const syncContent = () => {
 };
 
 const getContentList = async () => {
-  // if (!db.isOpen()) {
-  //   db.open();
+  // if (auth.currentUser) {
+  //   syncContent();
   // }
-  if (auth.currentUser) {
-    syncContent();
-  }
   const keys = await db.metadata.orderBy("contentId").keys();
   const contentList = await keys.map(async (key) => {
     const doc = await getMetadataById(key);
     return doc;
   });
-  // if (db.isOpen()) {
-  //   //db.close();
-  // }
   return contentList;
 };
 
 const deleteContentById = (contentId) => {
-  // if (!db.isOpen()) {
-  //   db.open();
-  // }
   try {
     if (auth.currentUser) {
       rtdb.ref(`users/${auth.currentUser.uid}/content/${contentId}`).set({});
@@ -197,4 +207,5 @@ export {
   getFilebyId,
   getContentList,
   deleteContentById,
+  syncContent,
 };
