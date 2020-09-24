@@ -30,9 +30,13 @@ export default function UserLibrary() {
   });
 
   const deleteRow = (contentId) => {
-    return deleteContentById(contentId).then(() => {
-      setDBRead(false);
-    });
+    return deleteContentById(contentId)
+      .then(() => {
+        setDBRead(false);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   };
 
   const editContentTitle = (contentId) => {

@@ -19,8 +19,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ContentView({ id, title, type, source, position }) {
   const classes = useStyles();
-  const viewerHeight = 0.8 * window.innerHeight;
-  let viewerWidth = 0.9 * window.innerWidth;
+  const viewerHeight = 0.7 * window.innerHeight;
+  let viewerWidth = window.innerWidth;
+  if (window.innerWidth > 480) {
+    viewerWidth = 0.7 * window.innerWidth;
+  }
+
   const [lastSavedPosition, setLastSavedPosition] = useState(position);
 
   const saveCurrentPosition = (position, totalLength) => {
@@ -60,28 +64,37 @@ export default function ContentView({ id, title, type, source, position }) {
   let contentEl = <p>Loading content...</p>;
 
   if (type.toLowerCase().includes("pdf")) {
-    if (window.navigator.onLine) {
-      contentEl = (
-        <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
-          <AdobePdfViewer
-            id={id}
-            url={source}
-            fileName={`${title}.pdf`}
-            position={position}
-            onPageChange={saveCurrentPosition}
-          />
-        </div>
-      );
-    } else {
-      contentEl = (
-        <ReactPDFView
-          fileUrl={source}
-          width={viewerWidth}
-          position={position}
-          pageChange={saveCurrentPosition}
-        />
-      );
-    }
+    contentEl = (
+      <ReactPDFView
+        fileUrl={source}
+        // width={viewerWidth}
+        height={viewerHeight}
+        position={position}
+        pageChange={saveCurrentPosition}
+      />
+    );
+    // if (window.navigator.onLine) {
+    //   contentEl = (
+    //     <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
+    //       <AdobePdfViewer
+    //         id={id}
+    //         url={source}
+    //         fileName={`${title}.pdf`}
+    //         position={position}
+    //         onPageChange={saveCurrentPosition}
+    //       />
+    //     </div>
+    //   );
+    // } else {
+    //   contentEl = (
+    //     <ReactPDFView
+    //       fileUrl={source}
+    //       width={viewerWidth}
+    //       position={position}
+    //       pageChange={saveCurrentPosition}
+    //     />
+    //   );
+    // }
   } else if (type.toLowerCase().includes("youtube")) {
     const youtubeId = source.split("/").pop();
     contentEl = (

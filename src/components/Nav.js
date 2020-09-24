@@ -1,10 +1,17 @@
-import React from "react";
-import { makeStyles, AppBar, Toolbar, IconButton } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import {
+  makeStyles,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Button,
+} from "@material-ui/core";
 import { Link } from "@reach/router";
 import logo from "../logo.svg";
 import HelpIcon from "@material-ui/icons/Help";
 import ShareIcon from "@material-ui/icons/Share";
 import TwitterIcon from "@material-ui/icons/Twitter";
+import { auth } from "./Firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +27,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Nav() {
   const classes = useStyles();
+
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+      }
+    });
+  }, []);
+
+  const handleLogout = () => {
+    auth.signOut();
+    window.location.reload();
+  };
+
   const shareApp = () => {
     if (navigator.share) {
       navigator
@@ -62,6 +85,24 @@ export default function Nav() {
           <IconButton aria-label="help" component={Link} to="/help">
             <HelpIcon />
           </IconButton>
+          {user && user.uid ? (
+            <Button
+              // variant="contained"
+              // color="secondary"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="secondary"
+              component={Link}
+              to="/login"
+            >
+              Login To Sync
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </div>
