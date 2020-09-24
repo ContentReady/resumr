@@ -4,7 +4,7 @@ import { makeStyles, Grid, IconButton, ButtonGroup } from "@material-ui/core";
 import Replay30Icon from "@material-ui/icons/Replay30";
 import Forward30Icon from "@material-ui/icons/Forward30";
 import { updateMetadata } from "./DB";
-import AdobePdfViewer from "./AdobePDFView";
+// import AdobePdfViewer from "./AdobePDFView";
 import ReactPDFView from "./ReactPDFView";
 
 const useStyles = makeStyles((theme) => ({
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ContentView({ id, title, type, source, position }) {
   const classes = useStyles();
-  const viewerHeight = 0.7 * window.innerHeight;
+  const viewerHeight = 0.85 * window.innerHeight;
   let viewerWidth = window.innerWidth;
   if (window.innerWidth > 480) {
     viewerWidth = 0.7 * window.innerWidth;

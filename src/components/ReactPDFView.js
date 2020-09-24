@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { pdfjs, Document, Outline, Page } from "react-pdf";
 import { ButtonGroup, Button, Grid, makeStyles, Fade } from "@material-ui/core";
-import FullscreenIcon from "@material-ui/icons/Fullscreen";
-import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
+import ZoomInIcon from "@material-ui/icons/ZoomIn";
+import ZoomOutIcon from "@material-ui/icons/ZoomOut";
 import Modal from "@material-ui/core/Modal";
 import useEventListener from "./useEventListener";
 import "../../node_modules/tocca/Tocca";
@@ -11,20 +11,15 @@ import "../../node_modules/tocca/Tocca";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const useStyles = makeStyles((theme) => ({
-  btnContainer: {
+  navContainer: {
     position: "absolute",
-    bottom: 5,
+    top: 0.8 * window.innerHeight,
     backgroundColor: "transparent",
   },
-  maxBtn: {
+  zoomContainer: {
     position: "absolute",
-    top: 0,
-    right: 0,
-    borderRadius: "unset",
-    "&:hover": {
-      backgroundColor: theme.palette.background.default,
-      color: theme.palette.text.primary,
-    },
+    top: 5,
+    backgroundColor: "transparent",
   },
   paper: {
     position: "absolute",
@@ -42,36 +37,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
+export default function ReactPDFView({
+  fileUrl,
+  width,
+  height,
+  position,
+  pageChange,
+}) {
   const classes = useStyles();
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [open, setOpen] = useState(false);
-  const [newWidth, setNewWidth] = useState(width);
+  const [pageWidth, setPageWidth] = useState(width);
+  const [pageHeight, setPageHeight] = useState(height);
   const [showNav, setShowNav] = useState(true);
   const pdfRef = useRef(null);
 
-  const handleFullscreenMode = () => {
-    setOpen(!open);
-  };
+  // const handleFullscreenMode = () => {
+  //   setOpen(!open);
+  // };
 
   useEffect(() => {
     if (position) {
       setPageNumber(position);
     }
   }, [position]);
-
-  const handleWidth = () => {
-    if (open) {
-      setNewWidth(window.innerWidth);
-    } else {
-      setNewWidth(window.innerWidth);
-
-      if (window.innerWidth > 1024) {
-        setNewWidth(window.innerWidth * 0.6);
-      }
-    }
-  };
 
   const handleNextPage = (e) => {
     if (pageNumber < numPages) {
@@ -110,15 +100,34 @@ export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
     return () => clearTimeout(timer);
   }, [showNav]);
 
-  useEventListener(window, "resize", handleWidth);
+  // useEventListener(window, "resize", handleWidth);
   useEventListener(document, "keydown", handleKeyDown);
   useEventListener(pdfRef, "swipeleft", handleNextPage);
   useEventListener(pdfRef, "swiperight", handlePrevPage);
   useEventListener(pdfRef, "mousemove", handleMousemove);
 
-  useEffect(() => {
-    handleWidth();
-  }, [open]);
+  const zoomIn = () => {
+    if (width) {
+      setPageWidth(1.1 * pageWidth);
+    } else if (height) {
+      setPageHeight(1.1 * pageHeight);
+    }
+  };
+
+  const zoomOut = () => {
+    if (width) {
+      setPageWidth(pageWidth / 1.1);
+    } else if (height) {
+      setPageHeight(pageHeight / 1.1);
+    }
+  };
+  const resetZoom = () => {
+    if (width) {
+      setPageWidth(width);
+    } else if (height) {
+      setPageHeight(height);
+    }
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -138,18 +147,28 @@ export default function ReactPDFView({ fileUrl, width, position, pageChange }) {
         <Page
           pageNumber={pageNumber || 1}
           renderAnnotationLayer={false}
-          renderMode="svg"
-          width={newWidth}
+          width={pageWidth}
+          height={pageHeight}
         />
         <Outline onItemClick={onItemClick} />
       </Document>
-      <Button className={classes.maxBtn} onClick={handleFullscreenMode}>
-        {open ? <FullscreenExitIcon /> : <FullscreenIcon />}
-      </Button>
       <Fade in={showNav}>
-        <Grid container justify="center" className={classes.btnContainer}>
+        <Grid container justify="center" className={classes.zoomContainer}>
+          <ButtonGroup variant="text">
+            <Button onClick={zoomIn}>
+              <ZoomInIcon />
+            </Button>
+            <Button onClick={resetZoom}>Reset</Button>
+            <Button onClick={zoomOut}>
+              <ZoomOutIcon />
+            </Button>
+          </ButtonGroup>
+        </Grid>
+      </Fade>
+      <Fade in={showNav}>
+        <Grid container justify="center" className={classes.navContainer}>
           {numPages && showNav && (
-            <ButtonGroup size="large" color="primary" variant="contained">
+            <ButtonGroup size="medium" color="primary" variant="contained">
               <Button
                 variant="contained"
                 color="primary"
