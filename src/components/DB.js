@@ -106,6 +106,7 @@ const getFilebyId = async (contentId) => {
 const syncContent = () => {
   let localContentIds = [];
   let remoteContentIds = [];
+  let deletedContentIds = [];
   let shouldReload = false;
   db.metadata
     .orderBy("contentId")
@@ -121,9 +122,12 @@ const syncContent = () => {
           querySnapshot.forEach((doc) => {
             const obj = doc.val();
             const contentId = doc.key;
+            if (obj.isDeleted) {
+              deletedContentIds.push(contentId);
+            }
             remoteContentIds.push(contentId);
             obj["contentId"] = contentId;
-            if (!localContentIds.includes(contentId)) {
+            if (!localContentIds.includes(contentId) && !obj.isDeleted) {
               // Add to indexedDB
               db.metadata.put(obj);
               shouldReload = true;
@@ -135,25 +139,32 @@ const syncContent = () => {
           // console.log(localContentIds, remoteContentIds);
           Promise.all(
             localContentIds.map((contentId) => {
-              if (!remoteContentIds.includes(contentId)) {
+              if (deletedContentIds.includes(contentId)) {
+                console.log("Should delete:", contentId);
+                deleteContentById(contentId);
+                shouldReload = true;
+              } else if (!remoteContentIds.includes(contentId)) {
                 // This will be the case if user signs up after a while or uploads content while signed out
                 console.log("Should upload:", contentId);
-                return db.blobs.get(contentId).then(({ blob }) => {
-                  const file = new File([blob], contentId);
-                  storage
-                    .ref()
-                    .child(`${auth.currentUser.uid}/uploads/${contentId}`)
-                    .put(file)
-                    .then(() => {
-                      console.log("Uploaded:", contentId);
-                      return db.metadata.get(contentId).then((contentDoc) => {
-                        return rtdb
-                          .ref(
-                            `users/${auth.currentUser.uid}/content/${contentId}`
-                          )
-                          .set(contentDoc);
+                return db.blobs.get(contentId).then((data) => {
+                  if (data && data.blob) {
+                    const blob = data.blob;
+                    const file = new File([blob], contentId);
+                    storage
+                      .ref()
+                      .child(`${auth.currentUser.uid}/uploads/${contentId}`)
+                      .put(file)
+                      .then(() => {
+                        console.log("Uploaded:", contentId);
+                        return db.metadata.get(contentId).then((contentDoc) => {
+                          return rtdb
+                            .ref(
+                              `users/${auth.currentUser.uid}/content/${contentId}`
+                            )
+                            .set(contentDoc);
+                        });
                       });
-                    });
+                  }
                 });
               }
               return true;
@@ -185,11 +196,21 @@ const getContentList = async () => {
 const deleteContentById = (contentId) => {
   try {
     if (auth.currentUser) {
-      rtdb.ref(`users/${auth.currentUser.uid}/content/${contentId}`).set({});
-      storage
-        .ref()
-        .child(`${auth.currentUser.uid}/uploads/${contentId}`)
-        .delete();
+      rtdb
+        .ref(`users/${auth.currentUser.uid}/content/${contentId}`)
+        .update({ isDeleted: true })
+        .then(() => {
+          storage
+            .ref()
+            .child(`${auth.currentUser.uid}/uploads/${contentId}`)
+            .delete()
+            .catch((e) => {
+              console.error(e);
+            });
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     }
   } catch (e) {
     console.error(e);
