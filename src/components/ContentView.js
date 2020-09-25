@@ -67,7 +67,7 @@ export default function ContentView({ id, title, type, source, position }) {
     contentEl = (
       <ReactPDFView
         fileUrl={source}
-        // width={viewerWidth}
+        width={viewerWidth}
         height={viewerHeight}
         position={position}
         pageChange={saveCurrentPosition}

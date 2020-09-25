@@ -50,12 +50,9 @@ export default function ReactPDFView({
   const [open, setOpen] = useState(false);
   const [pageWidth, setPageWidth] = useState(width);
   const [pageHeight, setPageHeight] = useState(height);
+  const [pageScale, setPageScale] = useState(1);
   const [showNav, setShowNav] = useState(true);
   const pdfRef = useRef(null);
-
-  // const handleFullscreenMode = () => {
-  //   setOpen(!open);
-  // };
 
   useEffect(() => {
     if (position) {
@@ -92,15 +89,18 @@ export default function ReactPDFView({
     setShowNav(true);
   };
 
-  useEffect(() => {
+  const resetFadeTimer = () => {
     const timer = setTimeout(() => {
       setShowNav(false);
     }, 5000);
 
     return () => clearTimeout(timer);
+  };
+
+  useEffect(() => {
+    resetFadeTimer();
   }, [showNav]);
 
-  // useEventListener(window, "resize", handleWidth);
   useEventListener(document, "keydown", handleKeyDown);
   useEventListener(pdfRef, "swipeleft", handleNextPage);
   useEventListener(pdfRef, "swiperight", handlePrevPage);
@@ -133,8 +133,21 @@ export default function ReactPDFView({
     setOpen(false);
   };
 
-  function onDocumentLoadSuccess({ numPages: pages }) {
-    setNumPages(pages);
+  function onDocumentLoadSuccess(pdf) {
+    setNumPages(pdf.numPages);
+  }
+
+  function onPageLoadSuccess(page) {
+    // console.log(page);
+    // console.log(page.width, page.height, pageWidth, pageHeight);
+    // console.log(page.originalWidth, page.originalHeight, width, height);
+    const scale = Math.min(
+      width / page.originalWidth,
+      height / page.originalHeight
+    );
+    // console.log(scale);
+    setPageScale(scale);
+    // setNumPages(pdf.numPages);
   }
 
   function onItemClick({ pageNumber: itemPageNumber }) {
@@ -145,10 +158,12 @@ export default function ReactPDFView({
     <div ref={pdfRef}>
       <Document file={fileUrl} onLoadSuccess={onDocumentLoadSuccess}>
         <Page
+          onLoadSuccess={onPageLoadSuccess}
           pageNumber={pageNumber || 1}
           renderAnnotationLayer={false}
-          width={pageWidth}
-          height={pageHeight}
+          scale={pageScale}
+          // width={pageWidth}
+          // height={pageHeight}
         />
         <Outline onItemClick={onItemClick} />
       </Document>
@@ -213,6 +228,7 @@ export default function ReactPDFView({
 
 ReactPDFView.propTypes = {
   fileUrl: PropTypes.string.isRequired,
-  width: PropTypes.number.isRequired,
+  width: PropTypes.number,
+  height: PropTypes.number,
   pageChange: PropTypes.func,
 };
