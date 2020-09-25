@@ -13,9 +13,9 @@ import { Link } from "@reach/router";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    maxWidth: 752,
+    // maxWidth: 1024,
   },
-  demo: {
+  dialog: {
     backgroundColor: theme.palette.background.paper,
   },
   title: {
@@ -35,8 +35,8 @@ export default function Subscribe({ onClick }) {
   const classes = useStyles();
 
   return (
-    <Grid item xs={12} md={6}>
-      <div className={classes.demo}>
+    <Grid item>
+      <div className={classes.dialog}>
         <List component="nav">
           <ListItemA href="https://imjo.in/f47GT8">
             <ListItemIcon>

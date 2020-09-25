@@ -108,7 +108,7 @@ const syncContent = () => {
   let remoteContentIds = [];
   let deletedContentIds = [];
   let shouldReload = false;
-  db.metadata
+  return db.metadata
     .orderBy("contentId")
     .keys()
     .then((contentIds) => {

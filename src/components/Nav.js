@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  rotateIcon: {
+    transform: "rotate(-90deg)",
+  },
 }));
 
 function SimpleDialog({ open, onClose, onClick }) {
@@ -53,6 +56,8 @@ export default function Nav() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = useState();
+  const [rotationAngle, setRotationAngle] = useState(0);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -61,6 +66,12 @@ export default function Nav() {
       }
     });
   }, []);
+
+  // useEffect(() => {
+  //   if (isSyncing) {
+  //     setRotationAngle(rotationAngle + 1);
+  //   }
+  // }, [isSyncing]);
 
   const handleLogout = () => {
     auth.signOut();
@@ -78,6 +89,25 @@ export default function Nav() {
   const handleLinkClick = () => {
     handleClose();
     navigate("/login");
+  };
+
+  const handleSync = () => {
+    // Start rotating
+    // const timer = setInterval(() => {
+    //   console.log("rotating", rotationAngle);
+    //   setRotationAngle(rotationAngle + 30);
+    // }, 2000);
+    // setIsSyncing(true);
+    syncContent()
+      .then(() => {
+        // stop rotating
+        // clearTimeout(timer);
+      })
+      .catch((e) => {
+        console.error(e);
+        // stop rotating
+        // clearTimeout(timer);
+      });
   };
 
   const shareApp = () => {
@@ -110,8 +140,8 @@ export default function Nav() {
             <img src={logo} alt="Resumer" width="64" />
           </Link>
           {user && user.uid && (
-            <IconButton aria-label="sync" onClick={syncContent}>
-              <SyncIcon />
+            <IconButton aria-label="sync" onClick={handleSync}>
+              <SyncIcon style={{ transform: `rotate(-${rotationAngle}deg)` }} />
             </IconButton>
           )}
           {navigator.share ? (
