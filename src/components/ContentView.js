@@ -4,7 +4,7 @@ import { makeStyles, Grid, IconButton, ButtonGroup } from "@material-ui/core";
 import Replay30Icon from "@material-ui/icons/Replay30";
 import Forward30Icon from "@material-ui/icons/Forward30";
 import { updateMetadata } from "./DB";
-// import AdobePdfViewer from "./AdobePDFView";
+import AdobePdfViewer from "./AdobePDFView";
 import ReactPDFView from "./ReactPDFView";
 
 const useStyles = makeStyles((theme) => ({
@@ -111,37 +111,37 @@ export default function ContentView({ id, title, type, source, position }) {
   let contentEl = <p>Loading content...</p>;
 
   if (type.toLowerCase().includes("pdf")) {
-    contentEl = (
-      <ReactPDFView
-        fileUrl={source}
-        width={viewerWidth}
-        height={viewerHeight}
-        position={position}
-        pageChange={saveCurrentPosition}
-      />
-    );
-    // if (window.navigator.onLine) {
-    //   contentEl = (
-    //     <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
-    //       <AdobePdfViewer
-    //         id={id}
-    //         url={source}
-    //         fileName={`${title}.pdf`}
-    //         position={position}
-    //         onPageChange={saveCurrentPosition}
-    //       />
-    //     </div>
-    //   );
-    // } else {
-    //   contentEl = (
-    //     <ReactPDFView
-    //       fileUrl={source}
-    //       width={viewerWidth}
-    //       position={position}
-    //       pageChange={saveCurrentPosition}
-    //     />
-    //   );
-    // }
+    // contentEl = (
+    //   <ReactPDFView
+    //     fileUrl={source}
+    //     width={viewerWidth}
+    //     height={viewerHeight}
+    //     position={position}
+    //     pageChange={saveCurrentPosition}
+    //   />
+    // );
+    if (window.navigator.onLine) {
+      contentEl = (
+        <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
+          <AdobePdfViewer
+            id={id}
+            url={source}
+            fileName={`${title}.pdf`}
+            position={position}
+            onPageChange={saveCurrentPosition}
+          />
+        </div>
+      );
+    } else {
+      contentEl = (
+        <ReactPDFView
+          fileUrl={source}
+          width={viewerWidth}
+          position={position}
+          pageChange={saveCurrentPosition}
+        />
+      );
+    }
   } else if (type.toLowerCase().includes("youtube")) {
     const youtubeId = source.split("/").pop();
     contentEl = (
