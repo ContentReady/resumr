@@ -110,7 +110,7 @@ export default function ReactPDFView({
   const calcPageScale = () => {
     // console.log(pageWidth, width);
     // console.log(pageHeight, height);
-    if (window.innerWidth <= 640) {
+    if (window.innerWidth <= 1024) {
       return width / pageWidth;
     }
     if (pageWidth >= pageHeight) {
