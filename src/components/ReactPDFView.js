@@ -107,19 +107,11 @@ export default function ReactPDFView({
   useEventListener(pdfRef, "mousemove", handleMousemove);
 
   const zoomIn = () => {
-    if (width) {
-      setPageWidth(1.1 * pageWidth);
-    } else if (height) {
-      setPageHeight(1.1 * pageHeight);
-    }
+    setPageScale(1.1 * pageScale);
   };
 
   const zoomOut = () => {
-    if (width) {
-      setPageWidth(pageWidth / 1.1);
-    } else if (height) {
-      setPageHeight(pageHeight / 1.1);
-    }
+    setPageScale(pageScale / 1.1);
   };
   const resetZoom = () => {
     if (width) {
