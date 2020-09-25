@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import {
   makeStyles,
   AppBar,
@@ -6,7 +7,7 @@ import {
   IconButton,
   Button,
 } from "@material-ui/core";
-import { Link } from "@reach/router";
+import { Link, navigate } from "@reach/router";
 import logo from "../logo.svg";
 import HelpIcon from "@material-ui/icons/Help";
 import ShareIcon from "@material-ui/icons/Share";
@@ -15,6 +16,9 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import SyncIcon from "@material-ui/icons/Sync";
 import { auth } from "./Firebase";
 import { syncContent } from "./DB";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import Subscribe from "./Subscribe";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,9 +32,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Nav() {
+function SimpleDialog({ open, onClose, onClick }) {
   const classes = useStyles();
 
+  return (
+    <Dialog aria-labelledby="simple-dialog-title" open={open} onClose={onClose}>
+      <DialogTitle id="simple-dialog-title">Let's get started</DialogTitle>
+      <Subscribe onClick={onClick} />
+    </Dialog>
+  );
+}
+
+SimpleDialog.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
+export default function Nav() {
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
   const [user, setUser] = useState();
 
   useEffect(() => {
@@ -44,6 +65,19 @@ export default function Nav() {
   const handleLogout = () => {
     auth.signOut();
     window.location.reload();
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+  };
+
+  const handleLinkClick = () => {
+    handleClose();
+    navigate("/login");
   };
 
   const shareApp = () => {
@@ -98,18 +132,30 @@ export default function Nav() {
               <ExitToAppIcon />
             </IconButton>
           ) : (
+            // <Button
+            //   variant="contained"
+            //   color="secondary"
+            //   aria-label="login"
+            //   component={Link}
+            //   to="/login"
+            // >
+            //   Login
+            // </Button>
             <Button
               variant="contained"
               color="secondary"
-              aria-label="login"
-              component={Link}
-              to="/login"
+              onClick={handleClickOpen}
             >
               Login
             </Button>
           )}
         </Toolbar>
       </AppBar>
+      <SimpleDialog
+        open={open}
+        onClose={handleClose}
+        onClick={handleLinkClick}
+      />
     </div>
   );
 }
