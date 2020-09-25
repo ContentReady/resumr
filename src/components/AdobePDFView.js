@@ -22,8 +22,8 @@ class ViewSDKClient {
 
   previewFile(divId, url, fileName, viewerConfig, onPageChange) {
     const config = {
-      clientId: "9c0d356e1d7e4ffd9910aebe946117ac", // resumr.io
-      // clientId: "b2dadc9019db4678992d52f61c76f7b7", //localhost
+      // clientId: "9c0d356e1d7e4ffd9910aebe946117ac", // resumr.io
+      clientId: "b2dadc9019db4678992d52f61c76f7b7", //localhost
     };
     if (divId) {
       /* Optional only for Light Box embed mode */
@@ -86,13 +86,13 @@ export default class AdobePdfViewer extends Component {
         showAnnotationTools: false,
         dockPageControls: false,
       };
-      if (window.innerWidth <= 480) {
-        viewerOptions = {
-          embedMode: "IN_LINE",
-          showDownloadPDF: false,
-          showPrintPDF: false,
-        };
-      }
+      // if (window.innerWidth <= 1024) {
+      //   viewerOptions = {
+      //     embedMode: "IN_LINE",
+      //     showDownloadPDF: false,
+      //     showPrintPDF: false,
+      //   };
+      // }
       /* Invoke file preview */
       viewSDKClient
         .previewFile(

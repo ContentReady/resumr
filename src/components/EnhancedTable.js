@@ -335,111 +335,108 @@ export default function EnhancedTable({
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          onDelete={onDelete}
-          editContentTitle={onEdit}
-        />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={"medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.contentId);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+      <EnhancedTableToolbar
+        numSelected={selected.length}
+        onDelete={onDelete}
+        editContentTitle={onEdit}
+      />
+      <TableContainer>
+        <Table
+          className={classes.table}
+          aria-labelledby="tableTitle"
+          size={"small"}
+          aria-label="enhanced table"
+        >
+          <EnhancedTableHead
+            classes={classes}
+            numSelected={selected.length}
+            order={order}
+            orderBy={orderBy}
+            onSelectAllClick={handleSelectAllClick}
+            onRequestSort={handleRequestSort}
+            rowCount={rows.length}
+          />
+          <TableBody>
+            {stableSort(rows, getComparator(order, orderBy))
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, index) => {
+                const isItemSelected = isSelected(row.contentId);
+                const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.contentId}
-                      selected={isItemSelected}
+                return (
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.contentId}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        checked={isItemSelected}
+                        onClick={(event) =>
+                          handleSelectRow(event, row.contentId)
+                        }
+                        inputProps={{ "aria-labelledby": labelId }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          onClick={(event) =>
-                            handleSelectRow(event, row.contentId)
-                          }
-                          inputProps={{ "aria-labelledby": labelId }}
+                      {row.type && (
+                        <img
+                          width="32"
+                          src={icons[getContentType(row.type)]}
+                          alt={row.type}
                         />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.type && (
-                          <img
-                            width="32"
-                            src={icons[getContentType(row.type)]}
-                            alt={row.type}
-                          />
-                        )}
-                      </TableCell>
-                      <TableCell align="left">
-                        <Link to={"/content/" + row.contentId}>
-                          {row.title}
-                        </Link>
-                      </TableCell>
-                      <TableCell align="left">
-                        {row.lastPlayed &&
-                          new Date(row.lastPlayed).toLocaleString()}
-                      </TableCell>
-                      <TableCell component="th" scope="row">
-                        {row.position && row.totalLength
-                          ? row.type === "application/pdf"
-                            ? `${row.position} / ${row.totalLength} pages`
-                            : `${Math.floor(row.position / 60)}:${
-                                row.position % 60
-                              } / ${Math.floor(row.totalLength / 60)}:${
-                                row.totalLength % 60
-                              }`
-                          : ""}
-                      </TableCell>
-                      <TableCell align="right">
-                        {(row.size / 10e6).toFixed(2)}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
+                      )}
+                    </TableCell>
+                    <TableCell align="left">
+                      <Link to={"/content/" + row.contentId}>{row.title}</Link>
+                    </TableCell>
+                    <TableCell align="left">
+                      {row.lastPlayed &&
+                        new Date(row.lastPlayed).toLocaleString()}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.position && row.totalLength
+                        ? row.type === "application/pdf"
+                          ? `${row.position} / ${row.totalLength} pages`
+                          : `${Math.floor(row.position / 60)}:${
+                              row.position % 60
+                            } / ${Math.floor(row.totalLength / 60)}:${
+                              row.totalLength % 60
+                            }`
+                        : ""}
+                    </TableCell>
+                    <TableCell align="right">
+                      {(row.size / 10e6).toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={rows.length}
+        labelRowsPerPage="Rows"
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </div>
   );
 }

@@ -122,7 +122,12 @@ export default function ContentView({ id, title, type, source, position }) {
     // );
     if (window.navigator.onLine) {
       contentEl = (
-        <div style={{ height: viewerHeight + "px", width: viewerWidth + "px" }}>
+        <div
+          style={{
+            height: viewerHeight + "px",
+            width: viewerWidth + "px",
+          }}
+        >
           <AdobePdfViewer
             id={id}
             url={source}
@@ -159,11 +164,17 @@ export default function ContentView({ id, title, type, source, position }) {
     );
   } else if (type.toLowerCase().includes("video")) {
     contentEl = (
-      <Grid direction="column" justify="center" alignItems="center">
+      <Grid
+        direction="column"
+        style={{ paddingTop: "1rem" }}
+        justify="center"
+        alignItems="center"
+      >
         <video
           id="player"
-          width={0.95 * viewerWidth}
+          width={viewerWidth}
           controls
+          autoplay
           src={source}
           onTimeUpdate={onTimeUpdate}
         >
@@ -185,12 +196,18 @@ export default function ContentView({ id, title, type, source, position }) {
     );
   } else if (type.toLowerCase().includes("audio")) {
     contentEl = (
-      <Grid direction="column" justify="center" alignItems="center">
+      <Grid
+        direction="column"
+        style={{ paddingTop: "1rem" }}
+        justify="center"
+        alignItems="center"
+      >
         <audio
           id="player"
-          width={0.95 * viewerWidth}
+          width={viewerWidth}
           src={source}
           controls
+          autoplay
           onTimeUpdate={onTimeUpdate}
         >
           Your browser does not support the audio element.
