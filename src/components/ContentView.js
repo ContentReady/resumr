@@ -159,10 +159,10 @@ export default function ContentView({ id, title, type, source, position }) {
     );
   } else if (type.toLowerCase().includes("video")) {
     contentEl = (
-      <Grid container direction="column" justify="center" alignItems="center">
+      <Grid direction="column" justify="center" alignItems="center">
         <video
           id="player"
-          width={viewerWidth}
+          width={0.95 * viewerWidth}
           controls
           src={source}
           onTimeUpdate={onTimeUpdate}
@@ -185,8 +185,14 @@ export default function ContentView({ id, title, type, source, position }) {
     );
   } else if (type.toLowerCase().includes("audio")) {
     contentEl = (
-      <Grid container direction="column" justify="center" alignItems="center">
-        <audio id="player" src={source} controls onTimeUpdate={onTimeUpdate}>
+      <Grid direction="column" justify="center" alignItems="center">
+        <audio
+          id="player"
+          width={0.95 * viewerWidth}
+          src={source}
+          controls
+          onTimeUpdate={onTimeUpdate}
+        >
           Your browser does not support the audio element.
         </audio>
         <ButtonGroup
