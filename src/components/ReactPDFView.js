@@ -107,12 +107,27 @@ export default function ReactPDFView({
   useEventListener(pdfRef, "swiperight", handlePrevPage);
   useEventListener(pdfRef, "mousemove", handleMousemove);
 
+  const calcPageScale = () => {
+    // console.log(pageWidth, width);
+    // console.log(pageHeight, height);
+    if (window.innerWidth <= 640) {
+      return width / pageWidth;
+    }
+    if (pageWidth >= pageHeight) {
+      // console.log(width / pageWidth);
+      return width / pageWidth;
+    } else {
+      // console.log(height / pageHeight);
+      return height / pageHeight;
+    }
+  };
+
   const zoomIn = () => {
     setShowNav(true);
     if (zoomScale) {
       setZoomScale(1.1 * zoomScale);
     } else {
-      setZoomScale(1.1 * Math.min(width / pageWidth, height / pageHeight));
+      setZoomScale(1.1 * calcPageScale());
     }
   };
 
@@ -121,7 +136,7 @@ export default function ReactPDFView({
     if (zoomScale) {
       setZoomScale(zoomScale / 1.1);
     } else {
-      setZoomScale(Math.min(width / pageWidth, height / pageHeight) / 1.1);
+      setZoomScale(calcPageScale() / 1.1);
     }
   };
   const resetZoom = () => {
@@ -149,7 +164,7 @@ export default function ReactPDFView({
           onLoadSuccess={onPageLoadSuccess}
           pageNumber={pageNumber || 1}
           renderAnnotationLayer={false}
-          scale={zoomScale || Math.min(width / pageWidth, height / pageHeight)}
+          scale={zoomScale || calcPageScale()}
         />
         <Outline onItemClick={onItemClick} />
       </Document>
