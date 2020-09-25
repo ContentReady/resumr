@@ -48,9 +48,11 @@ export default function ReactPDFView({
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [open, setOpen] = useState(false);
-  const [pageWidth, setPageWidth] = useState(width);
-  const [pageHeight, setPageHeight] = useState(height);
+  const [fadeTimer, setFadeTimer] = useState();
+  // const [pageWidth, setPageWidth] = useState(width);
+  // const [pageHeight, setPageHeight] = useState(height);
   const [pageScale, setPageScale] = useState(1);
+  const [preZoomScale, setpreZoomScale] = useState(1);
   const [showNav, setShowNav] = useState(true);
   const pdfRef = useRef(null);
 
@@ -114,11 +116,7 @@ export default function ReactPDFView({
     setPageScale(pageScale / 1.1);
   };
   const resetZoom = () => {
-    if (width) {
-      setPageWidth(width);
-    } else if (height) {
-      setPageHeight(height);
-    }
+    setPageScale(preZoomScale);
   };
 
   const handleClose = () => {
@@ -130,16 +128,12 @@ export default function ReactPDFView({
   }
 
   function onPageLoadSuccess(page) {
-    // console.log(page);
-    // console.log(page.width, page.height, pageWidth, pageHeight);
-    // console.log(page.originalWidth, page.originalHeight, width, height);
     const scale = Math.min(
       width / page.originalWidth,
       height / page.originalHeight
     );
-    // console.log(scale);
     setPageScale(scale);
-    // setNumPages(pdf.numPages);
+    setpreZoomScale(scale);
   }
 
   function onItemClick({ pageNumber: itemPageNumber }) {
@@ -154,8 +148,6 @@ export default function ReactPDFView({
           pageNumber={pageNumber || 1}
           renderAnnotationLayer={false}
           scale={pageScale}
-          // width={pageWidth}
-          // height={pageHeight}
         />
         <Outline onItemClick={onItemClick} />
       </Document>
