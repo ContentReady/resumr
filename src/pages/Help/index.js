@@ -28,8 +28,9 @@ export default function Help() {
         completely offline and continue where you left off.
       </Typography>
       <Typography variant="body1" component="p" className={classes.paragraph}>
-        Resumr is offline-first and anonymous. When you sign in, you can sync
-        content to your other devices (coming soon!).
+        Resumr is offline-first and completely anonymous if you don't sign in.
+        When you sign in, you can sync content to your other devices (coming
+        soon!).
       </Typography>
 
       <Typography variant="body1" component="p" className={classes.paragraph}>

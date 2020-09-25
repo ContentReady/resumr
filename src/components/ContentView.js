@@ -70,7 +70,7 @@ export default function ContentView({ id, title, type, source, position }) {
   const [lastSavedPosition, setLastSavedPosition] = useState(position);
 
   const saveCurrentPosition = (position, totalLength) => {
-    updateMetadata(id, { position, totalLength });
+    updateMetadata(id, { position, totalLength, lastPlayed: new Date() });
   };
 
   const onTimeUpdate = (event) => {

@@ -23,7 +23,9 @@ export default function UserLibrary() {
           });
         })
       ).then(() => {
-        setUserContent(contentArray);
+        setUserContent(
+          contentArray.sort((a, b) => b.lastPlayed - a.lastPlayed)
+        );
       });
       setDBRead(true);
     });
