@@ -47,12 +47,9 @@ export default function ReactPDFView({
   const classes = useStyles();
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
-  const [open, setOpen] = useState(false);
-  const [fadeTimer, setFadeTimer] = useState();
-  // const [pageWidth, setPageWidth] = useState(width);
-  // const [pageHeight, setPageHeight] = useState(height);
+  // const [fadeTimer, setFadeTimer] = useState();
   const [pageScale, setPageScale] = useState(1);
-  const [preZoomScale, setpreZoomScale] = useState(1);
+  const [zoomScale, setZoomScale] = useState();
   const [showNav, setShowNav] = useState(true);
   const pdfRef = useRef(null);
 
@@ -63,6 +60,7 @@ export default function ReactPDFView({
   }, [position]);
 
   const handleNextPage = (e) => {
+    setShowNav(true);
     if (pageNumber < numPages) {
       const newPageNumber = pageNumber + 1;
       setPageNumber(newPageNumber);
@@ -71,6 +69,7 @@ export default function ReactPDFView({
   };
 
   const handlePrevPage = (e) => {
+    setShowNav(true);
     if (pageNumber > 1) {
       const newPageNumber = pageNumber - 1;
       setPageNumber(newPageNumber);
@@ -91,16 +90,14 @@ export default function ReactPDFView({
     setShowNav(true);
   };
 
-  const resetFadeTimer = () => {
+  useEffect(() => {
+    // if (fadeTimer) {
+    //   clearTimeout(fadeTimer);
+    // }
     const timer = setTimeout(() => {
       setShowNav(false);
     }, 5000);
-
-    return () => clearTimeout(timer);
-  };
-
-  useEffect(() => {
-    resetFadeTimer();
+    // setFadeTimer(timer);
   }, [showNav]);
 
   useEventListener(document, "keydown", handleKeyDown);
@@ -109,18 +106,25 @@ export default function ReactPDFView({
   useEventListener(pdfRef, "mousemove", handleMousemove);
 
   const zoomIn = () => {
-    setPageScale(1.1 * pageScale);
+    setShowNav(true);
+    if (zoomScale) {
+      setZoomScale(1.1 * zoomScale);
+    } else {
+      setZoomScale(1.1 * pageScale);
+    }
   };
 
   const zoomOut = () => {
-    setPageScale(pageScale / 1.1);
+    setShowNav(true);
+    if (zoomScale) {
+      setZoomScale(zoomScale / 1.1);
+    } else {
+      setZoomScale(pageScale / 1.1);
+    }
   };
   const resetZoom = () => {
-    setPageScale(preZoomScale);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+    setShowNav(true);
+    setZoomScale(null);
   };
 
   function onDocumentLoadSuccess(pdf) {
@@ -133,7 +137,6 @@ export default function ReactPDFView({
       height / page.originalHeight
     );
     setPageScale(scale);
-    setpreZoomScale(scale);
   }
 
   function onItemClick({ pageNumber: itemPageNumber }) {
@@ -147,7 +150,7 @@ export default function ReactPDFView({
           onLoadSuccess={onPageLoadSuccess}
           pageNumber={pageNumber || 1}
           renderAnnotationLayer={false}
-          scale={pageScale}
+          scale={zoomScale || pageScale}
         />
         <Outline onItemClick={onItemClick} />
       </Document>
@@ -190,24 +193,7 @@ export default function ReactPDFView({
     </div>
   );
 
-  if (!open) {
-    return <div style={{ position: "relative" }}>{body}</div>;
-  }
-
-  if (open) {
-    return (
-      <>
-        <Modal
-          className={classes.modal}
-          open={open}
-          onClose={handleClose}
-          disableBackdropClick
-        >
-          <div className={classes.paper}>{body}</div>
-        </Modal>
-      </>
-    );
-  }
+  return <div style={{ position: "relative" }}>{body}</div>;
 }
 
 ReactPDFView.propTypes = {
