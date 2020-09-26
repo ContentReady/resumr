@@ -32,8 +32,6 @@ function verifySignature(message, receivedSignature) {
 
 const db = admin.firestore();
 const subscriptionsRef = db.collection("subscriptions");
-// const db = admin.database();
-// const subscriptionsRef = db.ref("subscriptions");
 
 exports.setupTrialSubscription = functions.auth.user().onCreate((user) => {
   console.log(user);
@@ -45,7 +43,6 @@ exports.setupTrialSubscription = functions.auth.user().onCreate((user) => {
     start: start.getTime(),
     end: end.getTime(),
   };
-  //   const ref = subscriptionsRef.child(`${uid}`);
   const ref = subscriptionsRef.doc(uid);
   ref.set(doc);
   //   Send email
@@ -114,6 +111,7 @@ exports.disableExpiredTrials = functions.pubsub
   });
 
 exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
+  console.log(req.body);
   // Verify that message is from Razorpay
   const message = req.rawBody;
   const receivedSignature = req.headers["x-razorpay-signature"];
