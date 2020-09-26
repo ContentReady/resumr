@@ -202,7 +202,6 @@ const getContentList = async () => {
     const doc = await getMetadataById(key);
     return doc;
   });
-  // subscribeToRemoteDB();
   return contentList;
 };
 

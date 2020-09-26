@@ -83,6 +83,22 @@ export default function Help() {
         content across all your devices.
       </Typography>
       <Typography variant="h6" component="h5" className={classes.heading}>
+        What does sync mean?
+      </Typography>
+      <Typography variant="body1" component="p" className={classes.paragraph}>
+        Sync lets you upload a book or a video on your laptop and access it on
+        your phone, or on your tablet! Your content and position is copied, via
+        our cloud servers, across your devices as soon as you log in!
+      </Typography>
+      <Typography variant="h6" component="h5" className={classes.heading}>
+        Can I install Resumr on my phone?
+      </Typography>
+      <Typography variant="body1" component="p" className={classes.paragraph}>
+        Yes, you can! Resumr is a progressive web app (PWA) and can be run
+        completely offline. You should see see an option within your browser to
+        add/install Resumr to your home screen.
+      </Typography>
+      <Typography variant="h6" component="h5" className={classes.heading}>
         Why do I still see my content after I have signed out?
       </Typography>
       <Typography variant="body1" component="p" className={classes.paragraph}>
@@ -103,12 +119,11 @@ export default function Help() {
         How much content can I save?
       </Typography>
       <Typography variant="body1" component="p" className={classes.paragraph}>
-        Resumr uses the browser's IndexedDB to store content offline. While
-        limits vary across browsers, you can typically store around 1GB of
+        Resumr uses the browser's internal storage to store content offline.
+        While limits vary across browsers, you can typically store around 1GB of
         content offline. Online sync currently has a soft limit of 2GB per user.
         We do not auto-delete your content but we will get in touch if you are
-        over the limit. Serious and persistent abuse of this limit may lead to
-        deactivation of your account.
+        over the limit.
       </Typography>
       <Typography variant="h4" component="h3" className={classes.paragraph}>
         Legals!
