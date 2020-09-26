@@ -111,7 +111,7 @@ exports.disableExpiredTrials = functions.pubsub
   });
 
 exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
-  console.log(req.body);
+  console.log(JSON.stringify(req.body));
   // Verify that message is from Razorpay
   const message = req.rawBody;
   const receivedSignature = req.headers["x-razorpay-signature"];

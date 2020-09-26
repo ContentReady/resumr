@@ -116,7 +116,7 @@ export default function Nav() {
         .share({
           title: "Resumr",
           text:
-            "I am loving @resumr_io - lets you resume PDFs, audio and video from where you left off, across devices! Get started in 30 seconds at https://resumr.io",
+            "I am loving @resumr_io - lets you resume PDFs, audio and video from where you left off, across devices! Get started in 30 seconds.",
           url: "https://resumr.io/",
         })
         .then(() => console.log("Successful share"))
