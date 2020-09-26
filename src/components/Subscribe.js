@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import FlightTakeoffIcon from "@material-ui/icons/FlightTakeoff";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
-import { Link } from "@reach/router";
+// import { Link } from "@reach/router";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,9 +27,9 @@ function ListItemA(props) {
   return <ListItem button component="a" {...props} />;
 }
 
-function ListItemLink(props) {
-  return <ListItem button component={Link} {...props} />;
-}
+// function ListItemLink(props) {
+//   return <ListItem button component={Link} {...props} />;
+// }
 
 export default function Subscribe({ onClick }) {
   const classes = useStyles();
@@ -38,7 +38,7 @@ export default function Subscribe({ onClick }) {
     <Grid item>
       <div className={classes.dialog}>
         <List component="nav">
-          <ListItemA href="https://imjo.in/f47GT8">
+          <ListItemA href="https://rzp.io/l/resumr">
             <ListItemIcon>
               <AttachMoneyIcon />
             </ListItemIcon>

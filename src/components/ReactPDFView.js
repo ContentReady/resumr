@@ -4,7 +4,6 @@ import { pdfjs, Document, Outline, Page } from "react-pdf";
 import { ButtonGroup, Button, Grid, makeStyles, Fade } from "@material-ui/core";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
 import ZoomOutIcon from "@material-ui/icons/ZoomOut";
-import Modal from "@material-ui/core/Modal";
 import useEventListener from "./useEventListener";
 import "../../node_modules/tocca/Tocca";
 
@@ -48,7 +47,7 @@ export default function ReactPDFView({
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   // const [fadeTimer, setFadeTimer] = useState();
-  const [pageScale, setPageScale] = useState(1);
+  // const [pageScale, setPageScale] = useState(1);
   const [zoomScale, setZoomScale] = useState();
   const [pageWidth, setPageWidth] = useState(width);
   const [pageHeight, setPageHeight] = useState(height);
@@ -99,6 +98,9 @@ export default function ReactPDFView({
     const timer = setTimeout(() => {
       setShowNav(false);
     }, 5000);
+    return () => {
+      clearTimeout(timer);
+    };
     // setFadeTimer(timer);
   }, [showNav]);
 

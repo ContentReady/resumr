@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SimpleDialog({ open, onClose, onClick }) {
-  const classes = useStyles();
+  // const classes = useStyles();
 
   return (
     <Dialog aria-labelledby="simple-dialog-title" open={open} onClose={onClose}>
@@ -56,8 +56,8 @@ export default function Nav() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = useState();
-  const [rotationAngle, setRotationAngle] = useState(0);
-  const [isSyncing, setIsSyncing] = useState(false);
+  // const [rotationAngle, setRotationAngle] = useState(0);
+  // const [isSyncing, setIsSyncing] = useState(false);
 
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
@@ -116,7 +116,7 @@ export default function Nav() {
         .share({
           title: "Resumr",
           text:
-            "I am loving @resumr_io - lets you resume PDFs, audio and video where you left off, across devices! Get started in 30 seconds at https://resumr.io",
+            "I am loving @resumr_io - lets you resume PDFs, audio and video from where you left off, across devices! Get started in 30 seconds at https://resumr.io",
           url: "https://resumr.io/",
         })
         .then(() => console.log("Successful share"))
@@ -126,7 +126,7 @@ export default function Nav() {
 
   const tweetApp = () => {
     window.open(
-      "https://twitter.com/intent/tweet/?text=I%20am%20loving%20%40resumr_io%20-%20lets%20you%20%23resume%20%23PDFs%2C%20%23audio%20and%20%23video%20where%20you%20left%20off%2C%20across%20devices%21%20Get%20started%20in%2030%20seconds%20at%20https%3A%2F%2Fresumr.io",
+      "https://twitter.com/intent/tweet/?text=I%20am%20loving%20%40resumr_io%20-%20lets%20you%20%23resume%20%23PDFs%2C%20%23audio%20and%20%23video%20from%20where%20you%20left%20off%2C%20across%20devices%21%20Get%20started%20in%2030%20seconds%20at%20https%3A%2F%2Fresumr.io",
       "Twitter",
       "height=285,width=550,resizable=1"
     );
@@ -141,7 +141,7 @@ export default function Nav() {
           </Link>
           {user && user.uid && (
             <IconButton aria-label="sync" onClick={handleSync}>
-              <SyncIcon style={{ transform: `rotate(-${rotationAngle}deg)` }} />
+              <SyncIcon />
             </IconButton>
           )}
           {navigator.share ? (
