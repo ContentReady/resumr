@@ -42,7 +42,9 @@ export default function ContentDetails({ id }) {
           // 1. Publicly accessible OR
           // 2. Hosted on Firebase with a gs:// URL
           getFilebyId(id).then((blob) => {
-            setSensibleUrl(window.URL.createObjectURL(blob));
+            if (blob) {
+              setSensibleUrl(window.URL.createObjectURL(blob));
+            }
           });
         })
         .catch((e) => {
