@@ -2,27 +2,51 @@ const functions = require("firebase-functions");
 
 const admin = require("firebase-admin");
 const serviceAccount = require("./service-account.json");
+const razorpay = require("razorpay");
+
+const razorpaySecret = "eRLp9V9ewmLQ9DW";
 
 admin.initializeApp({
-  //   credential: admin.credential.cert(serviceAccount),
-  //   databaseURL: "https://resumr-8540b.firebaseio.com",
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://resumr-8540b.firebaseio.com",
 });
 
-// console.log("initialised");
+function verifySignature(message, receivedSignature) {
+  return razorpay.validateWebhookSignature(
+    message,
+    receivedSignature,
+    razorpaySecret
+  );
+}
+
+const uid = "lJbjXyD9jZdj6Q8KjplqCAv9psk2";
+const db = admin.database();
+const ref = db.ref("users");
 
 // admin
 //   .database()
-//   .ref(`users`)
-//   .once("value")
-//   .then((data) => {
-//     console.log(data.val());
-//   });
+//   .ref(`users/${uid}/subscription`)
+//   .set({
+//     start: new Date(),
+//     end: new Date(),
+//   })
+//   .then((ref) => {
+//     console.log("saved subscription details");
+//     console.log(ref);
+//   })
+//   .catch((e) => console.error(e));
 
 exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
+  // Verify that message is from Razorpay
+  const message = req.rawBody;
+  const receivedSignature = req.headers["x-razorpay-signature"];
+  if (!verifySignature(message, receivedSignature))
+    throw Error("Signature mismatch");
+
   const entity = req.body.payload.payment.entity;
   const email = entity.email;
   const phoneNumber = entity.contact;
-  // look up with this email or phone
+  // look up account with this (1) email or (2) phone
   // enable account if disabled
   admin
     .auth()
@@ -41,17 +65,11 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
           const end = new Date();
           end.setDate(new Date().getDate() + 365);
           console.log(uid, start, end);
-          admin
-            .database()
-            .ref(`users/${uid}/subscription`)
-            .set({
-              start: start,
-              end: end,
-            })
-            .then(() => {
-              console.log("saved subscription details");
-            })
-            .catch((e) => console.error(e));
+          const usersRef = ref.child(`${uid}/subscription`);
+          usersRef.set({
+            start: start.getTime(),
+            end: end.getTime(),
+          });
         })
         .catch(function (error) {
           console.log("Error updating user:", error);
@@ -77,17 +95,11 @@ exports.paymentWebhook = functions.https.onRequest(async (req, res) => {
               const end = new Date();
               end.setDate(new Date().getDate() + 365);
               console.log(uid, start, end);
-              admin
-                .database()
-                .ref(`users/${uid}/subscription`)
-                .set({
-                  start,
-                  end,
-                })
-                .then(() => {
-                  console.log("saved subscription details");
-                })
-                .catch((e) => console.error(e));
+              const usersRef = ref.child(`${uid}/subscription`);
+              usersRef.set({
+                start: start.getTime(),
+                end: end.getTime(),
+              });
             })
             .catch(function (error) {
               console.log("Error updating user:", error);
