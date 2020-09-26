@@ -35,12 +35,14 @@ function useWindowSize() {
 
     function handleResize() {
       // Set window width/height to state
-
-      setWindowSize({
+      const size = {
         width: window.innerWidth,
 
         height: window.innerHeight,
-      });
+      };
+      // console.log(size);
+
+      setWindowSize(size);
     }
 
     // Add event listener
@@ -172,7 +174,9 @@ export default function ContentView({ id, title, type, source, position }) {
       >
         <video
           id="player"
-          width={viewerWidth}
+          // width={viewerWidth}
+          width="100%"
+          // height="auto"
           controls
           autoplay
           src={source}
