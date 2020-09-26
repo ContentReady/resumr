@@ -166,13 +166,28 @@ const syncContent = () => {
                       });
                   }
                 });
+              } else {
+                // Exists in both remote and local.
+                // Should update from remote to get latest position and title etc.
+                // console.log(contentId);
+                return rtdb
+                  .ref(`users/${auth.currentUser.uid}/content/${contentId}`)
+                  .once("value")
+                  .then((doc) => {
+                    const data = doc.val();
+                    return db.metadata.put(data);
+                  })
+                  .catch((e) => {
+                    console.error(e);
+                  });
               }
               return true;
             })
           ).then(() => {
-            if (shouldReload) {
-              window.location.reload();
-            }
+            // if (shouldReload) {
+            //   window.location.reload();
+            // }
+            window.location.reload();
           });
         });
     })
@@ -182,16 +197,34 @@ const syncContent = () => {
 };
 
 const getContentList = async () => {
-  // if (auth.currentUser) {
-  //   syncContent();
-  // }
   const keys = await db.metadata.orderBy("contentId").keys();
   const contentList = await keys.map(async (key) => {
     const doc = await getMetadataById(key);
     return doc;
   });
+  // subscribeToRemoteDB();
   return contentList;
 };
+
+// const subscribeToRemoteDB = () => {
+//   if (!auth.currentUser) {
+//     return false;
+//   }
+//   rtdb
+//     .ref(`users/${auth.currentUser.uid}/content`)
+//     .orderByChild("contentId")
+//     .on("value")
+//     .then((querySnapshot) => {
+//       querySnapshot.forEach((doc) => {
+//         const obj = doc.val();
+//         const contentId = doc.key;
+//         console.log(obj, contentId);
+//       });
+//     })
+//     .catch((e) => {
+//       console.error(e);
+//     });
+// };
 
 const deleteContentById = (contentId) => {
   try {
