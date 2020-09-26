@@ -70,7 +70,7 @@ exports.setupTrialSubscription = functions.auth.user().onCreate((user) => {
 });
 
 exports.disableExpiredTrials = functions.pubsub
-  .schedule("every 5 minutes")
+  .schedule("every 24 hours")
   .onRun((context) => {
     const now = Date.now();
     console.log(now);

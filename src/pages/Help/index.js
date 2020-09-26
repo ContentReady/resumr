@@ -92,6 +92,14 @@ export default function Help() {
         intact.
       </Typography>
       <Typography variant="h6" component="h5" className={classes.heading}>
+        Can I use Resumr as a backup service?
+      </Typography>
+      <Typography variant="body1" component="p" className={classes.paragraph}>
+        Please do not :-). While we make every effort to keep your content safe,
+        we **strongly** recommend using Google Drive, Dropbox or similar for
+        backup!
+      </Typography>
+      <Typography variant="h6" component="h5" className={classes.heading}>
         How much content can I save?
       </Typography>
       <Typography variant="body1" component="p" className={classes.paragraph}>
