@@ -116,7 +116,7 @@ export default function Nav() {
         .share({
           title: "Resumr",
           text:
-            "I am loving @resumr_io - lets you resume PDFs, audio and video from where you left off, across devices! Get started in 30 seconds.",
+            "If you, like me, read a lot of PDFs and listen to audiobooks, Resumr is for you. Resumr lets you resume PDFs, audio and video from where you left off, across devices!",
           url: "https://resumr.io/",
         })
         .then(() => console.log("Successful share"))
@@ -126,7 +126,7 @@ export default function Nav() {
 
   const tweetApp = () => {
     window.open(
-      "https://twitter.com/intent/tweet/?text=I%20am%20loving%20%40resumr_io%20-%20lets%20you%20%23resume%20%23PDFs%2C%20%23audio%20and%20%23video%20from%20where%20you%20left%20off%2C%20across%20devices%21%20Get%20started%20in%2030%20seconds%20at%20https%3A%2F%2Fresumr.io",
+      "https://twitter.com/intent/tweet/?text=If%20you%2C%20like%20me%2C%20read%20a%20lot%20of%20%23PDFs%20and%20listen%20to%20%23audiobooks%2C%20%40resumr_io%20is%20for%20you.%20https%3A%2F%2Fresumr.io%20lets%20you%20resume%20PDFs%2C%20audio%20and%20video%20from%20where%20you%20left%20off%2C%20across%20devices%21%20",
       "Twitter",
       "height=285,width=550,resizable=1"
     );
