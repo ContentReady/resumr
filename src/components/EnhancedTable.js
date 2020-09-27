@@ -22,6 +22,7 @@ import CreateIcon from "@material-ui/icons/Create";
 import PDFIcon from "../assets/images/pdf.png";
 import AudioIcon from "../assets/images/audio.png";
 import VideoIcon from "../assets/images/video.png";
+// import ShareIcon from "@material-ui/icons/Share";
 import { Link } from "@reach/router";
 
 function descendingComparator(a, b, orderBy) {

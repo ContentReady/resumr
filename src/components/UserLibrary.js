@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import TableContainer from "@material-ui/core/TableContainer";
 import Paper from "@material-ui/core/Paper";
 import { getContentList, deleteContentById, updateMetadata } from "./DB";
+// import { remoteConfig } from "./Firebase";
 import EnhancedTable from "./EnhancedTable";
 
 export default function UserLibrary() {

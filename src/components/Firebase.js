@@ -18,7 +18,6 @@ firebase.initializeApp(firebaseConfig);
 export const analytics = firebase.analytics();
 
 // Firebase Performance
-
 const perf = firebase.performance();
 
 window.perfMetrics.onFirstInputDelay(function (delay, evt) {
@@ -32,6 +31,15 @@ window.perfMetrics.onFirstInputDelay(function (delay, evt) {
     nonInteraction: true,
   });
 });
+
+// Firebase Remote Config
+export const remoteConfig = firebase.remoteConfig();
+remoteConfig.settings = {
+  minimumFetchIntervalMillis: 3600000,
+};
+remoteConfig.defaultConfig = {
+  content_sharing_enabled: false,
+};
 
 export default firebase;
 export const auth = firebase.auth();
