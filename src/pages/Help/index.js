@@ -91,6 +91,14 @@ export default function Help() {
         our cloud servers, across your devices as soon as you log in!
       </Typography>
       <Typography variant="h6" component="h5" className={classes.heading}>
+        Is my content private?
+      </Typography>
+      <Typography variant="body1" component="p" className={classes.paragraph}>
+        Absolutely! If you don't sign in, your content never leaves your device.
+        Once you sign in, we store your content, anonymised, on our servers to
+        allow syncing. No one other than you can access your content.
+      </Typography>
+      <Typography variant="h6" component="h5" className={classes.heading}>
         Can I install Resumr on my phone?
       </Typography>
       <Typography variant="body1" component="p" className={classes.paragraph}>
@@ -124,6 +132,35 @@ export default function Help() {
         content offline. Online sync currently has a soft limit of 2GB per user.
         We do not auto-delete your content but we will get in touch if you are
         over the limit.
+      </Typography>
+      <Typography variant="h6" component="h5" className={classes.heading}>
+        Does Resumr have a library of content?
+      </Typography>
+      <Typography variant="body1" component="p" className={classes.paragraph}>
+        This early release of Resumr does not include a public library. We are
+        gathering user inputs on what kind of content they would be interested.
+        Please write to us if you could share your inputs.
+      </Typography>
+      <Typography variant="h4" component="h3" className={classes.paragraph}>
+        Contact
+      </Typography>
+      <Typography variant="body1" component="p" className={classes.paragraph}>
+        <a
+          href="mailto:resumr@contentready.co"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          resumr@contentready.co
+        </a>
+      </Typography>
+      <Typography variant="body1" component="p" className={classes.paragraph}>
+        <a
+          href="https://twitter.com/resumr_io"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          @resumr_io
+        </a>
       </Typography>
       <Typography variant="h4" component="h3" className={classes.paragraph}>
         Legals!

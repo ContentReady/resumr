@@ -36,8 +36,8 @@ function Home() {
       <Dropzone />
       <UserLibrary openContent={openContent} />
       <Typography variant="body1" component="p" className={classes.footer}>
-        Resumr lets you resume PDFs, audio and video from where you left off,
-        across devices! <Link to="/help">Click here</Link> to learn more.
+        Resumr lets you resume PDFs, audio & video from where you left off,
+        across devices! <Link to="/help">Learn more</Link>.
       </Typography>
     </div>
   );
