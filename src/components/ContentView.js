@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { makeStyles, Grid, IconButton, ButtonGroup } from "@material-ui/core";
+import {
+  makeStyles,
+  Grid,
+  IconButton,
+  ButtonGroup,
+  Button,
+  Typography,
+  Tooltip,
+} from "@material-ui/core";
 import Replay30Icon from "@material-ui/icons/Replay30";
 import Forward30Icon from "@material-ui/icons/Forward30";
 import { updateMetadata } from "./DB";
@@ -68,6 +76,7 @@ export default function ContentView({ id, title, type, source, position }) {
 
   const [viewerHeight, setViewerHeight] = useState(0.85 * size.height);
   const [viewerWidth, setViewerWidth] = useState(size.width);
+  const [playbackRate, setPlaybackRate] = useState(1);
 
   const [lastSavedPosition, setLastSavedPosition] = useState(position);
 
@@ -94,6 +103,21 @@ export default function ContentView({ id, title, type, source, position }) {
   const goForward = () => {
     const player = document.getElementById("player");
     player.currentTime += 30;
+  };
+  const goSlower = () => {
+    const player = document.getElementById("player");
+    player.playbackRate *= 0.9;
+    setPlaybackRate(player.playbackRate.toFixed(1));
+  };
+  const goFaster = () => {
+    const player = document.getElementById("player");
+    player.playbackRate *= 1.1;
+    setPlaybackRate(player.playbackRate.toFixed(1));
+  };
+  const resetPlaybackRate = () => {
+    const player = document.getElementById("player");
+    player.playbackRate = 1;
+    setPlaybackRate(player.playbackRate.toFixed(1));
   };
 
   useEffect(() => {
@@ -172,30 +196,47 @@ export default function ContentView({ id, title, type, source, position }) {
         justify="center"
         alignItems="center"
       >
-        <video
-          id="player"
-          // width={viewerWidth}
-          width="100%"
-          // height="auto"
-          controls
-          autoplay
-          src={source}
-          onTimeUpdate={onTimeUpdate}
-        >
-          Your browser does not support the video tag.
-        </video>
-        <ButtonGroup
-          size="large"
-          color="primary"
-          aria-label="large outlined primary button group"
-        >
-          <IconButton color="primary" onClick={goBack}>
-            <Replay30Icon />
-          </IconButton>
-          <IconButton color="primary" onClick={goForward}>
-            <Forward30Icon />
-          </IconButton>
-        </ButtonGroup>
+        <Grid direction="row" justify="center" alignItems="center">
+          <video
+            id="player"
+            // width={viewerWidth}
+            width="100%"
+            // height="auto"
+            controls
+            autoplay
+            src={source}
+            onTimeUpdate={onTimeUpdate}
+          >
+            Your browser does not support the video tag.
+          </video>
+        </Grid>
+        <Grid direction="row" justify="center" alignItems="center">
+          <ButtonGroup aria-label="primary button group">
+            <Button variant="text" size="small" onClick={goSlower}>
+              <Typography variant="caption" display="inline">
+                0.9x
+              </Typography>
+            </Button>
+            <IconButton color="primary" onClick={goBack}>
+              <Replay30Icon />
+            </IconButton>
+            <Tooltip title="Click to reset playback speed">
+              <Button variant="text" size="small" onClick={resetPlaybackRate}>
+                <Typography variant="caption" display="inline">
+                  {playbackRate}x
+                </Typography>
+              </Button>
+            </Tooltip>
+            <IconButton color="primary" onClick={goForward}>
+              <Forward30Icon />
+            </IconButton>
+            <Button variant="text" size="small" onClick={goFaster}>
+              <Typography variant="caption" display="inline">
+                1.1x
+              </Typography>
+            </Button>
+          </ButtonGroup>
+        </Grid>
       </Grid>
     );
   } else if (type.toLowerCase().includes("audio")) {
@@ -206,28 +247,45 @@ export default function ContentView({ id, title, type, source, position }) {
         justify="center"
         alignItems="center"
       >
-        <audio
-          id="player"
-          width={viewerWidth}
-          src={source}
-          controls
-          autoplay
-          onTimeUpdate={onTimeUpdate}
-        >
-          Your browser does not support the audio element.
-        </audio>
-        <ButtonGroup
-          size="medium"
-          color="primary"
-          aria-label="large outlined primary button group"
-        >
-          <IconButton color="primary" onClick={goBack}>
-            <Replay30Icon />
-          </IconButton>
-          <IconButton color="primary" onClick={goForward}>
-            <Forward30Icon />
-          </IconButton>
-        </ButtonGroup>
+        <Grid direction="row" justify="center" alignItems="center">
+          <audio
+            id="player"
+            width={viewerWidth}
+            src={source}
+            controls
+            autoplay
+            onTimeUpdate={onTimeUpdate}
+          >
+            Your browser does not support the audio element.
+          </audio>
+        </Grid>
+        <Grid direction="row" justify="center" alignItems="center">
+          <ButtonGroup aria-label="primary button group">
+            <Button variant="text" size="small" onClick={goSlower}>
+              <Typography variant="caption" display="inline">
+                0.9x
+              </Typography>
+            </Button>
+            <IconButton color="primary" onClick={goBack}>
+              <Replay30Icon />
+            </IconButton>
+            <Tooltip title="Click to reset playback speed">
+              <Button variant="text" size="small" onClick={resetPlaybackRate}>
+                <Typography variant="caption" display="inline">
+                  {playbackRate}x
+                </Typography>
+              </Button>
+            </Tooltip>
+            <IconButton color="primary" onClick={goForward}>
+              <Forward30Icon />
+            </IconButton>
+            <Button variant="text" size="small" onClick={goFaster}>
+              <Typography variant="caption" display="inline">
+                1.1x
+              </Typography>
+            </Button>
+          </ButtonGroup>
+        </Grid>
       </Grid>
     );
   }

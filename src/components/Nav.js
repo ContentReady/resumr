@@ -6,6 +6,7 @@ import {
   Toolbar,
   IconButton,
   Button,
+  Tooltip,
 } from "@material-ui/core";
 import { Link, navigate } from "@reach/router";
 import logo from "../logo.svg";
@@ -140,9 +141,11 @@ export default function Nav() {
             <img src={logo} alt="Resumer" width="64" />
           </Link>
           {user && user.uid && (
-            <IconButton aria-label="sync" onClick={handleSync}>
-              <SyncIcon />
-            </IconButton>
+            <Tooltip title="Sync content and progress with other devices">
+              <IconButton aria-label="sync" onClick={handleSync}>
+                <SyncIcon />
+              </IconButton>
+            </Tooltip>
           )}
           {navigator.share ? (
             <IconButton aria-label="share" onClick={shareApp}>
