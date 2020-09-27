@@ -168,7 +168,7 @@ export default function ReactPDFView({
           renderAnnotationLayer={false}
           scale={zoomScale || calcPageScale()}
         />
-        <Outline onItemClick={onItemClick} />
+        {/* <Outline onItemClick={onItemClick} /> */}
       </Document>
       <Fade in={showNav}>
         <Grid container justify="center" className={classes.zoomContainer}>
