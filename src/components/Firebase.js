@@ -33,13 +33,13 @@ window.perfMetrics.onFirstInputDelay(function (delay, evt) {
 });
 
 // Firebase Remote Config
-export const remoteConfig = firebase.remoteConfig();
-remoteConfig.settings = {
-  minimumFetchIntervalMillis: 3600000,
-};
-remoteConfig.defaultConfig = {
-  content_sharing_enabled: false,
-};
+// export const remoteConfig = firebase.remoteConfig();
+// remoteConfig.settings = {
+//   minimumFetchIntervalMillis: 3600000,
+// };
+// remoteConfig.defaultConfig = {
+//   content_sharing_enabled: false,
+// };
 
 export default firebase;
 export const auth = firebase.auth();
