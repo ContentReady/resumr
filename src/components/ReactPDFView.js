@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { pdfjs, Document, Outline, Page } from "react-pdf";
+import { pdfjs, Document, Page } from "react-pdf";
 import { ButtonGroup, Button, Grid, makeStyles, Fade } from "@material-ui/core";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
 import ZoomOutIcon from "@material-ui/icons/ZoomOut";
@@ -155,9 +155,9 @@ export default function ReactPDFView({
     setPageHeight(page.originalHeight);
   }
 
-  function onItemClick({ pageNumber: itemPageNumber }) {
-    setPageNumber(itemPageNumber);
-  }
+  // function onItemClick({ pageNumber: itemPageNumber }) {
+  //   setPageNumber(itemPageNumber);
+  // }
 
   const body = (
     <div ref={pdfRef}>
