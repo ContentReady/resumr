@@ -1,9 +1,11 @@
-import React from "react";
-import Dropzone from "../../components/Dropzone";
-import UserLibrary from "../../components/UserLibrary";
+import React, { lazy, Suspense } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link, navigate } from "@reach/router";
 import { Typography } from "@material-ui/core";
+
+const renderLoader = () => <p>Loading...</p>;
+const UserLibrary = lazy(() => import("../../components/UserLibrary"));
+const Dropzone = lazy(() => import("../../components/Dropzone"));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,14 +34,16 @@ function Home() {
     navigate(`/content/${id}`);
   };
   return (
-    <div className={classes.root}>
-      <Dropzone />
-      <UserLibrary openContent={openContent} />
-      <Typography variant="body1" component="p" className={classes.footer}>
-        Resumr lets you resume PDFs, audio & video from where you left off,
-        across devices! <Link to="/help">Learn more</Link>.
-      </Typography>
-    </div>
+    <Suspense fallback={renderLoader()}>
+      <div className={classes.root}>
+        <Dropzone />
+        <UserLibrary openContent={openContent} />
+        <Typography variant="body1" component="p" className={classes.footer}>
+          Resumr lets you resume PDFs, audio & video from where you left off,
+          across devices! <Link to="/help">Learn more</Link>.
+        </Typography>
+      </div>
+    </Suspense>
   );
 }
 

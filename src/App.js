@@ -1,10 +1,5 @@
 import React, { lazy, Suspense } from "react";
 import { Router } from "@reach/router";
-// import Home from "./pages/Home";
-// import Content from "./pages/Content";
-// import Help from "./pages/Help";
-// import Login from "./pages/Login";
-// import Nav from "./components/Nav";
 
 const Home = lazy(() => import("./pages/Home"));
 const Content = lazy(() => import("./pages/Content"));
@@ -15,7 +10,6 @@ const renderLoader = () => <p>Resumr is loading...</p>;
 
 function App() {
   return (
-    // <div>
     <Suspense fallback={renderLoader()}>
       <Nav />
       <Router>
@@ -25,7 +19,6 @@ function App() {
         <Login path="/login" />
       </Router>
     </Suspense>
-    // </div>
   );
 }
 

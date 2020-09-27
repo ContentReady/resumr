@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import {
   Typography,
   makeStyles,
@@ -8,9 +8,11 @@ import {
   Fab,
 } from "@material-ui/core";
 import { getMetadataById, getFilebyId } from "./DB";
-import ContentView from "./ContentView";
 import HomeIcon from "@material-ui/icons/Home";
 import { Link } from "@reach/router";
+
+const renderLoader = () => <p>Loading...</p>;
+const ContentView = lazy(() => import("./ContentView"));
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,7 +62,7 @@ export default function ContentDetails({ id }) {
     );
   }
   return (
-    <>
+    <Suspense fallback={renderLoader()}>
       <Paper className={classes.paper} elevation={0}>
         {sensibleUrl ? (
           <ContentView
@@ -93,6 +95,6 @@ export default function ContentDetails({ id }) {
       <Fab aria-label="home" className={classes.fab} component={Link} to="/">
         <HomeIcon />
       </Fab>
-    </>
+    </Suspense>
   );
 }
