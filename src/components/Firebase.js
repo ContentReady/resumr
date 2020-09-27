@@ -1,6 +1,7 @@
 import firebase from "firebase";
 import "firebase/storage";
 import "firebase/analytics";
+import "firebase/performance";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDP4TDL30TMGcrWZm8SSKp1Xi0RP4EF6MU",
@@ -14,7 +15,23 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+export const analytics = firebase.analytics();
+
+// Firebase Performance
+
+const perf = firebase.performance();
+
+window.perfMetrics.onFirstInputDelay(function (delay, evt) {
+  analytics.logEvent("performance", {
+    eventCategory: "Perf Metrics",
+    eventAction: "first-input-delay",
+    eventLabel: evt.type,
+    // Event values must be an integer.
+    eventValue: Math.round(delay),
+    // Exclude this event from bounce rate calculations.
+    nonInteraction: true,
+  });
+});
 
 export default firebase;
 export const auth = firebase.auth();
