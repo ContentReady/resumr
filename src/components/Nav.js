@@ -34,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
   rotateIcon: {
     transform: "rotate(-90deg)",
   },
+  helpButton: {
+    color: "white",
+  },
+  logoutButton: {
+    color: "red",
+  },
 }));
 
 function SimpleDialog({ open, onClose, onClick }) {
@@ -41,7 +47,9 @@ function SimpleDialog({ open, onClose, onClick }) {
 
   return (
     <Dialog aria-labelledby="simple-dialog-title" open={open} onClose={onClose}>
-      <DialogTitle id="simple-dialog-title">Let's get started</DialogTitle>
+      <DialogTitle id="simple-dialog-title">
+        Resume across devices...
+      </DialogTitle>
       <Subscribe onClick={onClick} />
     </Dialog>
   );
@@ -157,29 +165,29 @@ export default function Nav() {
             </IconButton>
           )}
 
-          <IconButton aria-label="help" component={Link} to="/help">
+          <IconButton
+            aria-label="help"
+            className={classes.helpButton}
+            component={Link}
+            to="/help"
+          >
             <HelpIcon />
           </IconButton>
           {user && user.uid ? (
-            <IconButton aria-label="logout" onClick={handleLogout}>
+            <IconButton
+              className={classes.logoutButton}
+              aria-label="logout"
+              onClick={handleLogout}
+            >
               <ExitToAppIcon />
             </IconButton>
           ) : (
-            // <Button
-            //   variant="contained"
-            //   color="secondary"
-            //   aria-label="login"
-            //   component={Link}
-            //   to="/login"
-            // >
-            //   Login
-            // </Button>
             <Button
               variant="contained"
               color="secondary"
               onClick={handleClickOpen}
             >
-              Login
+              Sync
             </Button>
           )}
         </Toolbar>
