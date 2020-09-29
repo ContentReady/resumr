@@ -38,11 +38,11 @@ function getStepContent(step) {
   switch (step) {
     case 0:
       return `When you upload a file, Resumr stores a copy in your browser &
-        generates a unique link.`;
+        generates a unique link to that file.`;
     case 1:
-      return "Every time you read, listen or watch, Resumr stores the progress in your browser.";
+      return "Every time you read, listen or watch a file, Resumr stores the progress in your browser.";
     case 2:
-      return `Every time you open the link again, Resumr continues where you last left off.`;
+      return `The next time you open the link, Resumr continues where you last left off.`;
     case 3:
       return `When you sign up, we sync this content to your other devices so you can continue there too.`;
     default:
@@ -69,6 +69,9 @@ export default function HowDoesItWork({ handleHide }) {
 
   return (
     <div className={classes.root}>
+      <Typography style={{ padding: "2rem" }} variant="h5" component="h5">
+        Resumr is a browser and viewer for your PDF, audio and video files.
+      </Typography>
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (
           <Step key={label}>
@@ -103,8 +106,8 @@ export default function HowDoesItWork({ handleHide }) {
         {activeStep === steps.length && (
           <>
             <Typography>
-              That's all there is to it! Click on the help icon any time you
-              want to see this again.
+              That's all there is to it! Click on the <b>help icon</b> any time
+              you want to see this again.
             </Typography>
             <Button onClick={handleHide} className={classes.button}>
               Hide
