@@ -1,10 +1,11 @@
 import React, { lazy, Suspense } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link, navigate } from "@reach/router";
-import { Typography } from "@material-ui/core";
+import { Paper, Typography } from "@material-ui/core";
 
 const renderLoader = () => <p>Loading...</p>;
 const UserLibrary = lazy(() => import("../../components/UserLibrary"));
+const HowDoesItWork = lazy(() => import("../../components/HowDoesItWork"));
 const Dropzone = lazy(() => import("../../components/Dropzone"));
 
 const useStyles = makeStyles((theme) => ({
@@ -28,14 +29,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Home() {
+export default function Home({ helpShown, setHelpShown }) {
   const classes = useStyles();
   const openContent = (id) => {
     navigate(`/content/${id}`);
   };
+  const handleHide = () => {
+    setHelpShown(false);
+    localStorage.setItem("firstTimeUser", 0);
+  };
   return (
     <Suspense fallback={renderLoader()}>
       <div className={classes.root}>
+        {helpShown && (
+          <Paper>
+            <HowDoesItWork handleHide={handleHide} />
+          </Paper>
+        )}
         <Dropzone />
         <UserLibrary openContent={openContent} />
         <Typography variant="body1" component="p" className={classes.footer}>
@@ -46,5 +56,3 @@ function Home() {
     </Suspense>
   );
 }
-
-export default Home;

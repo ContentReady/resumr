@@ -61,7 +61,7 @@ SimpleDialog.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
-export default function Nav() {
+export default function Nav({ handleHelpClick }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = useState();
@@ -168,8 +168,7 @@ export default function Nav() {
           <IconButton
             aria-label="help"
             className={classes.helpButton}
-            component={Link}
-            to="/help"
+            onClick={handleHelpClick}
           >
             <HelpIcon />
           </IconButton>

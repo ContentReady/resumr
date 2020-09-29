@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { Router } from "@reach/router";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -9,11 +9,19 @@ const Nav = lazy(() => import("./components/Nav"));
 const renderLoader = () => <p>Resumr is loading...</p>;
 
 function App() {
+  let firstTimeUser = true;
+  if (localStorage.getItem("firstTimeUser") === "0") {
+    firstTimeUser = false;
+  }
+  const [helpShown, setHelpShown] = useState(firstTimeUser);
+  const showHelp = () => {
+    setHelpShown(true);
+  };
   return (
     <Suspense fallback={renderLoader()}>
-      <Nav />
+      <Nav handleHelpClick={showHelp} />
       <Router>
-        <Home path="/" />
+        <Home helpShown={helpShown} setHelpShown={setHelpShown} path="/" />
         <Content path="/content/:id" />
         <Help path="/help" />
         <Login path="/login" />
